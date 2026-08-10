@@ -1,0 +1,3634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Hub</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --danger:#dc2626;
+      --success:#16a34a;
+      --nav:#111827;
+      --soft:#eff6ff;
+    }
+    body {
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    button,input,textarea { font:inherit; }
+    button { cursor:pointer; border:0; }
+    .hidden { display:none !important; }
+
+    /* AUTH */
+    .auth-page {
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:linear-gradient(135deg,#eef4ff,#f8fafc);
+    }
+    .auth-card {
+      width:100%;
+      max-width:460px;
+      background:white;
+      padding:32px;
+      border-radius:20px;
+      box-shadow:0 20px 60px rgba(15,23,42,.10);
+    }
+    .brand {
+      font-size:28px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+    .subtitle {
+      color:var(--muted);
+      margin-bottom:26px;
+      line-height:1.6;
+    }
+    .tabs {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      background:#f3f4f6;
+      padding:5px;
+      border-radius:12px;
+      margin-bottom:20px;
+    }
+    .tab {
+      background:transparent;
+      padding:10px;
+      border-radius:9px;
+      color:#4b5563;
+      font-weight:700;
+    }
+    .tab.active {
+      background:white;
+      color:var(--primary);
+      box-shadow:0 1px 5px rgba(0,0,0,.08);
+    }
+    .field { margin-bottom:15px; }
+    .field label {
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:7px;
+    }
+    .field input,.field textarea {
+      width:100%;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      padding:12px 14px;
+      outline:none;
+      background:white;
+    }
+    .field input:focus,.field textarea:focus {
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.08);
+    }
+    .field textarea {
+      min-height:170px;
+      resize:vertical;
+    }
+    .primary {
+      width:100%;
+      background:var(--primary);
+      color:white;
+      padding:12px 16px;
+      border-radius:10px;
+      font-weight:700;
+    }
+    .primary:hover { background:var(--primary-dark); }
+    .auth-switch {
+      text-align:center;
+      margin-top:18px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .link-btn {
+      background:transparent;
+      color:var(--primary);
+      font-weight:700;
+      padding:0;
+    }
+    .message {
+      margin-top:12px;
+      min-height:20px;
+      font-size:14px;
+      color:var(--danger);
+    }
+    .ceo-note {
+      margin-top:16px;
+      padding:12px;
+      background:#fff7ed;
+      border-radius:10px;
+      color:#9a3412;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    /* APP */
+    header {
+      height:68px;
+      padding:0 28px;
+      background:var(--nav);
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .header-brand { font-weight:800; font-size:20px; }
+    .header-right {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:14px;
+    }
+    .logout {
+      background:#374151;
+      color:white;
+      padding:9px 13px;
+      border-radius:8px;
+    }
+    .layout {
+      display:grid;
+      grid-template-columns:230px 1fr;
+      min-height:calc(100vh - 68px);
+    }
+    aside {
+      background:white;
+      border-right:1px solid var(--line);
+      padding:24px 16px;
+    }
+    .role {
+      font-size:12px;
+      color:var(--muted);
+      margin:0 10px 14px;
+      text-transform:uppercase;
+      font-weight:800;
+      letter-spacing:.04em;
+    }
+    .menu-btn {
+      width:100%;
+      text-align:left;
+      background:transparent;
+      padding:11px 12px;
+      border-radius:9px;
+      margin-bottom:5px;
+      color:#374151;
+      font-weight:650;
+    }
+    .menu-btn.active,.menu-btn:hover {
+      background:var(--soft);
+      color:var(--primary);
+    }
+    main {
+      padding:30px;
+      max-width:1200px;
+      width:100%;
+      margin:0 auto;
+    }
+    .page-title {
+      font-size:27px;
+      font-weight:800;
+      margin:0 0 6px;
+    }
+    .page-desc {
+      margin:0 0 24px;
+      color:var(--muted);
+    }
+    .card {
+      background:var(--card);
+      border:1px solid #edf0f4;
+      border-radius:16px;
+      padding:22px;
+      box-shadow:0 2px 10px rgba(15,23,42,.035);
+      margin-bottom:18px;
+    }
+    .row {
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .grow { flex:1; }
+    .secondary {
+      background:#e5e7eb;
+      color:#374151;
+      padding:10px 14px;
+      border-radius:9px;
+      font-weight:700;
+    }
+    .success {
+      background:var(--success);
+      color:white;
+      padding:10px 14px;
+      border-radius:9px;
+      font-weight:700;
+    }
+    .danger {
+      background:#fee2e2;
+      color:var(--danger);
+      padding:8px 11px;
+      border-radius:8px;
+      font-weight:700;
+    }
+
+    /* TAGS */
+    .selected-tags,.filter-tags,.report-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+    }
+    .selected-tags { margin-bottom:9px; }
+    .tag-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      background:#dbeafe;
+      color:#1d4ed8;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+    }
+    .tag-chip button {
+      background:transparent;
+      color:#1d4ed8;
+      padding:0;
+    }
+    .tag-input-wrap { position:relative; }
+    .suggestions {
+      position:absolute;
+      top:calc(100% + 5px);
+      left:0;
+      right:0;
+      z-index:20;
+      background:white;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      max-height:210px;
+      overflow:auto;
+      box-shadow:0 12px 25px rgba(0,0,0,.12);
+    }
+    .suggestion {
+      padding:10px 13px;
+      cursor:pointer;
+    }
+    .suggestion:hover { background:var(--soft); }
+    .hint {
+      margin-top:7px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .filter-btn {
+      background:#e5e7eb;
+      color:#374151;
+      padding:8px 11px;
+      border-radius:999px;
+      font-size:13px;
+    }
+    .filter-btn.active {
+      background:var(--primary);
+      color:white;
+    }
+
+    /* REPORT */
+    .report-card {
+      background:white;
+      border:1px solid #e8edf3;
+      border-radius:15px;
+      padding:20px;
+      margin-bottom:15px;
+    }
+    .report-head {
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      margin-bottom:12px;
+    }
+    .report-title {
+      font-size:19px;
+      font-weight:800;
+    }
+    .report-meta {
+      color:var(--muted);
+      font-size:13px;
+      margin-top:6px;
+    }
+    .report-body {
+      white-space:pre-wrap;
+      color:#374151;
+      line-height:1.65;
+      margin:14px 0;
+    }
+    .ai-box {
+      margin-top:14px;
+      padding:13px 15px;
+      background:#f8fafc;
+      border-left:4px solid var(--primary);
+      border-radius:8px;
+    }
+    .ai-title {
+      font-size:13px;
+      font-weight:800;
+      color:var(--primary);
+      margin-bottom:5px;
+    }
+    .empty {
+      text-align:center;
+      padding:44px;
+      color:#9ca3af;
+      background:white;
+      border-radius:14px;
+      border:1px dashed #d1d5db;
+    }
+    .stats {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .stat {
+      background:white;
+      border-radius:14px;
+      padding:18px;
+      border:1px solid #edf0f4;
+    }
+    .stat-label { color:var(--muted); font-size:13px; }
+    .stat-value { font-size:28px; font-weight:800; margin-top:6px; }
+    .tag-admin-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px 12px;
+      background:#f8fafc;
+      border-radius:9px;
+      margin-bottom:7px;
+    }
+
+
+    .employee-group {
+      background:white;
+      border:1px solid #e8edf3;
+      border-radius:16px;
+      margin-bottom:18px;
+      overflow:hidden;
+    }
+    .employee-group-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 18px;
+      background:#f8fafc;
+      border-bottom:1px solid #e8edf3;
+      cursor:pointer;
+    }
+    .employee-name {
+      font-size:17px;
+      font-weight:800;
+    }
+    .employee-report-count {
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+    .employee-group-body {
+      padding:16px;
+    }
+    .employee-group-body .report-card:last-child {
+      margin-bottom:0;
+    }
+
+
+    .status-summary {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .status-card {
+      background:white;
+      border:1px solid #edf0f4;
+      border-radius:14px;
+      padding:18px;
+    }
+    .status-card .label {
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+    .status-card .value {
+      margin-top:7px;
+      font-size:27px;
+      font-weight:800;
+    }
+    .status-list {
+      display:grid;
+      gap:10px;
+    }
+    .status-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      background:white;
+      border:1px solid #e8edf3;
+      border-radius:12px;
+      padding:15px 17px;
+    }
+    .status-person {
+      font-weight:800;
+    }
+    .status-sub {
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .status-badge {
+      display:inline-flex;
+      align-items:center;
+      white-space:nowrap;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .status-badge.done {
+      background:#dcfce7;
+      color:#15803d;
+    }
+    .status-badge.missing {
+      background:#fee2e2;
+      color:#b91c1c;
+    }
+    .date-nav {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .date-nav input {
+      max-width:220px;
+    }
+
+
+    .account-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .account-card {
+      background:white;
+      border:1px solid #e8edf3;
+      border-radius:14px;
+      padding:18px;
+      margin-bottom:12px;
+    }
+
+    .account-card-head {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .account-name {
+      font-size:17px;
+      font-weight:800;
+    }
+
+    .account-id {
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .account-actions {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .warning-box {
+      background:#fff7ed;
+      color:#9a3412;
+      border:1px solid #fed7aa;
+      border-radius:10px;
+      padding:12px 14px;
+      font-size:13px;
+      line-height:1.6;
+      margin-top:14px;
+    }
+
+    .section-divider {
+      border:0;
+      border-top:1px solid var(--line);
+      margin:24px 0;
+    }
+
+
+    .tag-board-toolbar {display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
+    .tag-board-wrap {
+      width:100%;
+      height:var(--tag-board-height,calc(100vh - 190px));
+      min-height:320px;
+      overflow:hidden;
+      padding-bottom:0;
+    }
+    .tag-board {
+      display:grid;
+      grid-template-columns:repeat(var(--tag-board-cols,4),minmax(0,1fr));
+      grid-template-rows:repeat(var(--tag-board-rows,2),minmax(0,1fr));
+      gap:var(--tag-board-gap,18px);
+      padding:8px;
+      box-sizing:border-box;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      align-items:stretch;
+    }
+    .tag-column {
+      background:#748196;
+      border-radius:clamp(9px,1vw,14px);
+      min-width:0;
+      min-height:0;
+      height:100%;
+      padding:var(--tag-card-padding,14px);
+      color:white;
+      box-shadow:0 5px 18px rgba(15,23,42,.08);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+    }
+    /* 접힌 태그 카드는 제목/우선순위/보고서 수를 정확히 중앙 정렬 */
+    .tag-column:not(.expanded) {
+      justify-content:center;
+      align-items:center;
+    }
+    .tag-column:not(.expanded) .tag-column-title {
+      width:100%;
+      justify-content:center;
+      text-align:center;
+    }
+    .tag-column:not(.expanded) .tag-column-title-left {
+      width:100%;
+      text-align:center;
+      overflow:visible;
+    }
+    .tag-column:not(.expanded) .tag-column-name {
+      white-space:normal;
+      overflow:visible;
+      text-overflow:clip;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag-column:not(.expanded) .tag-column-count {
+      text-align:center;
+      margin-top:8px;
+    }
+    .tag-column:not(.expanded) .tag-toggle {
+      position:absolute;
+      top:var(--tag-card-padding,14px);
+      right:var(--tag-card-padding,14px);
+    }
+    .tag-column.expanded .tag-column-title {
+      justify-content:center;
+      text-align:center;
+      position:relative;
+      padding-right:calc(var(--tag-toggle-size,30px) + 10px);
+      padding-left:calc(var(--tag-toggle-size,30px) + 10px);
+    }
+    .tag-column.expanded .tag-column-title-left {
+      text-align:center;
+    }
+    .tag-column.expanded .tag-column-name {
+      white-space:normal;
+    }
+    .tag-column.expanded .tag-toggle {
+      position:absolute;
+      right:0;
+      top:50%;
+      transform:translateY(-50%);
+    }
+    .tag-column-title {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      font-size:var(--tag-title-size,clamp(16px,1.6vw,24px));
+      font-weight:900;
+      letter-spacing:-.03em;
+      margin:0;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tag-column-title-left {min-width:0;overflow:hidden;}
+    .tag-column-name {display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .tag-column-count {display:block;margin-top:4px;font-size:var(--tag-count-size,11px);font-weight:700;color:rgba(255,255,255,.72);}
+    .tag-toggle {
+      flex:0 0 auto;
+      width:var(--tag-toggle-size,30px);
+      height:var(--tag-toggle-size,30px);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:8px;
+      background:rgba(255,255,255,.12);
+      color:white;
+      font-size:13px;
+      transition:.15s ease;
+    }
+    .tag-column-title:hover .tag-toggle {background:rgba(255,255,255,.2);}
+    .tag-report-list {
+      margin-top:8px;
+      padding-top:8px;
+      padding-right:4px;
+      border-top:1px solid rgba(255,255,255,.22);
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      overflow-x:hidden;
+      overscroll-behavior:contain;
+      scrollbar-width:thin;
+      scrollbar-color:rgba(255,255,255,.38) rgba(255,255,255,.08);
+    }
+    .tag-report-list::-webkit-scrollbar { width:7px; }
+    .tag-report-list::-webkit-scrollbar-track {
+      background:rgba(255,255,255,.08);
+      border-radius:999px;
+    }
+    .tag-report-list::-webkit-scrollbar-thumb {
+      background:rgba(255,255,255,.38);
+      border-radius:999px;
+    }
+    .tag-report-list::-webkit-scrollbar-thumb:hover {
+      background:rgba(255,255,255,.55);
+    }
+    .tag-report-list.hidden {display:none;}
+    .tag-report-mini {background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px;margin-bottom:8px;cursor:pointer;transition:.15s ease;}
+    .tag-report-mini:last-child {margin-bottom:0;}
+    .tag-report-mini:hover {background:rgba(255,255,255,.15);transform:translateY(-1px);}
+    .tag-report-author {font-size:13px;font-weight:800;margin-bottom:3px;}
+    .tag-report-date {font-size:11px;color:rgba(255,255,255,.72);margin-bottom:5px;}
+    .tag-report-title {font-size:12px;line-height:1.4;font-weight:650;color:white;}
+    .tag-column-empty {padding:10px 2px;color:rgba(255,255,255,.62);font-size:12px;text-align:center;}
+    @media (max-width:900px) {
+      .tag-board {grid-template-columns:repeat(var(--tag-board-cols-mobile,2),minmax(0,1fr));gap:10px;}
+      .tag-column {padding:12px;}
+    }
+    .report-modal-backdrop {position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:2500;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .report-modal-card {width:min(720px,100%);max-height:85vh;overflow:auto;background:white;border-radius:18px;padding:24px;box-shadow:0 25px 70px rgba(0,0,0,.22);}
+    .report-modal-head {display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:12px;}
+    .report-modal-close {background:#e5e7eb;color:#374151;border-radius:9px;padding:8px 11px;}
+
+    .priority-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      margin-left:8px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#fff7ed;
+      color:#c2410c;
+      font-size:11px;
+      font-weight:800;
+      vertical-align:middle;
+    }
+
+    .priority-control {
+      display:flex;
+      align-items:center;
+      gap:7px;
+      flex-wrap:wrap;
+    }
+
+    .priority-select {
+      width:auto;
+      min-width:120px;
+      padding:7px 9px;
+      border:1px solid #d1d5db;
+      border-radius:8px;
+      background:white;
+      color:#374151;
+      font-size:13px;
+    }
+
+    .tag-admin-info {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .file-upload-panel {
+      border:1.5px dashed #bfdbfe;
+      background:linear-gradient(180deg,#f8fbff,#ffffff);
+      border-radius:14px;
+      padding:16px;
+    }
+    .file-input-native { display:none; }
+    .file-picker-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:10px;
+      background:#eff6ff;
+      color:#1d4ed8;
+      font-weight:800;
+      border:1px solid #bfdbfe;
+      cursor:pointer;
+      transition:.15s ease;
+      user-select:none;
+    }
+    .file-picker-btn:hover {
+      background:#dbeafe;
+      transform:translateY(-1px);
+    }
+    .selected-file-list,.attachment-grid {
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .selected-file-card,.attachment-card {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:11px 12px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+      border-radius:11px;
+      min-width:0;
+    }
+    .file-thumb {
+      width:58px;
+      height:58px;
+      border-radius:9px;
+      object-fit:cover;
+      border:1px solid #e5e7eb;
+      background:#f8fafc;
+      flex:0 0 auto;
+    }
+    .file-type-icon {
+      width:58px;
+      height:58px;
+      border-radius:9px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#f1f5f9;
+      font-weight:900;
+      font-size:12px;
+      color:#475569;
+      flex:0 0 auto;
+    }
+    .file-card-info { min-width:0; flex:1; }
+    .file-card-name {
+      font-weight:800;
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .file-card-meta { margin-top:4px; color:var(--muted); font-size:12px; }
+    .file-remove-btn {
+      background:#fee2e2;
+      color:#b91c1c;
+      padding:7px 9px;
+      border-radius:8px;
+      font-size:12px;
+      font-weight:800;
+      flex:0 0 auto;
+    }
+    .attachment-box {
+      margin-top:14px;
+      margin-bottom:8px;
+      padding:13px 14px;
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+    }
+    .attachment-title {
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .attachment-link {
+      color:var(--primary);
+      font-weight:800;
+      text-decoration:none;
+    }
+    .attachment-preview {
+      margin-top:10px;
+      border-radius:10px;
+      overflow:hidden;
+      border:1px solid #e5e7eb;
+      background:#fff;
+    }
+    .attachment-preview img { display:block; width:100%; max-height:420px; object-fit:contain; background:#f8fafc; }
+    .attachment-preview iframe { display:block; width:100%; height:420px; border:0; background:white; }
+    .report-actions {
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      margin-top:14px;
+    }
+    .edit-modal-backdrop {
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.52);
+      z-index:2600;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .edit-modal-card {
+      width:min(760px,100%);
+      max-height:90vh;
+      overflow:auto;
+      background:white;
+      border-radius:18px;
+      padding:24px;
+      box-shadow:0 25px 70px rgba(0,0,0,.22);
+    }
+
+    /* FULL RICH-TEXT REPORT EDITOR */
+    .report-content-launcher {
+      min-height:150px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      padding:14px;
+      background:white;
+      color:#374151;
+      line-height:1.65;
+      cursor:text;
+      overflow:hidden;
+      transition:.15s ease;
+    }
+    .report-content-launcher:hover {
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.06);
+    }
+    .report-content-launcher.empty { color:#9ca3af; }
+    .report-content-launcher p { margin:.35em 0; }
+
+    .rich-editor-backdrop {
+      position:fixed;
+      inset:0;
+      z-index:4000;
+      background:rgba(31,41,55,.58);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .rich-editor-window {
+      width:min(1180px,calc(100vw - 48px));
+      height:min(860px,calc(100vh - 48px));
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 30px 90px rgba(0,0,0,.28);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    .rich-editor-topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:16px 20px;
+      border-bottom:1px solid #e5e7eb;
+      background:white;
+    }
+    .rich-editor-title { font-size:20px; font-weight:900; }
+    .rich-editor-subtitle { margin-top:3px; font-size:12px; color:#6b7280; }
+    .rich-editor-close {
+      width:38px; height:38px; border-radius:10px;
+      background:#f3f4f6; color:#4b5563; font-size:18px;
+    }
+    .rich-editor-toolbar {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex-wrap:wrap;
+      padding:10px 18px;
+      border-bottom:1px solid #e5e7eb;
+      background:#f8fafc;
+    }
+    .editor-tool {
+      min-width:34px;
+      height:34px;
+      padding:0 9px;
+      border:1px solid #dbe1e8;
+      border-radius:8px;
+      background:white;
+      color:#374151;
+      font-weight:750;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+    }
+    .editor-tool:hover { background:#eef4ff; border-color:#bfdbfe; color:#1d4ed8; }
+    .editor-tool.red-text { color:#dc2626; font-weight:900; }
+    .editor-divider { width:1px; height:24px; background:#d1d5db; margin:0 3px; }
+    .editor-select {
+      height:34px; border:1px solid #dbe1e8; border-radius:8px;
+      background:white; padding:0 9px; color:#374151; outline:none;
+    }
+    .editor-color-label {
+      position:relative; overflow:hidden;
+    }
+    .editor-color-input {
+      position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer;
+    }
+    .rich-editor-canvas-wrap {
+      flex:1;
+      min-height:0;
+      overflow:auto;
+      background:#e5e7eb;
+      padding:28px;
+    }
+    .rich-editor-canvas {
+      width:min(900px,100%);
+      min-height:100%;
+      margin:0 auto;
+      background:white;
+      border-radius:4px;
+      box-shadow:0 2px 12px rgba(15,23,42,.12);
+      padding:54px 64px;
+      outline:none;
+      color:#111827;
+      font-size:16px;
+      line-height:1.75;
+      overflow-wrap:anywhere;
+    }
+    .rich-editor-canvas:empty:before {
+      content:attr(data-placeholder);
+      color:#9ca3af;
+      pointer-events:none;
+    }
+    .rich-editor-canvas p { margin:.45em 0; }
+    .rich-editor-canvas h1,.rich-editor-canvas h2,.rich-editor-canvas h3 { margin:.55em 0 .35em; }
+    .rich-editor-canvas ul,.rich-editor-canvas ol { padding-left:28px; }
+    .rich-editor-bottom {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px 18px; border-top:1px solid #e5e7eb; background:white;
+    }
+    .rich-editor-tip { font-size:12px; color:#6b7280; }
+    .rich-editor-buttons { display:flex; gap:8px; }
+    .rich-editor-buttons .primary { width:auto; padding:10px 22px; }
+    .rich-editor-buttons .secondary { padding:10px 18px; }
+
+    .report-body.rich-content { white-space:normal; }
+    .report-body.rich-content p { margin:.45em 0; }
+    .report-body.rich-content ul,.report-body.rich-content ol { padding-left:26px; }
+    .report-body.rich-content h1,.report-body.rich-content h2,.report-body.rich-content h3 { margin:.55em 0 .35em; }
+
+    @media (max-width:700px) {
+      .rich-editor-backdrop { padding:0; }
+      .rich-editor-window { width:100vw; height:100vh; border-radius:0; }
+      .rich-editor-canvas-wrap { padding:12px; }
+      .rich-editor-canvas { padding:28px 22px; }
+      .rich-editor-tip { display:none; }
+      .editor-divider { display:none; }
+    }
+
+    @media (max-width:800px) {
+      .layout { grid-template-columns:1fr; }
+      aside {
+        border-right:0;
+        border-bottom:1px solid var(--line);
+        display:flex;
+        gap:6px;
+        overflow:auto;
+        padding:10px;
+      }
+      aside .role { display:none; }
+      .menu-btn { width:auto; white-space:nowrap; margin:0; }
+      main { padding:20px; }
+      .stats { grid-template-columns:1fr; }
+      .status-summary { grid-template-columns:1fr; }
+      .account-grid { grid-template-columns:1fr; }
+      header { padding:0 18px; }
+      .header-right span { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- AUTH -->
+<section id="authPage" class="auth-page">
+  <div class="auth-card">
+    <div class="brand">Report Hub</div>
+    <div class="subtitle">
+      직원 보고서 제출 시스템입니다.<br>
+      아이디와 비밀번호를 입력해 로그인하세요.
+    </div>
+<div id="loginForm">
+      <div class="field">
+        <label>아이디</label>
+        <input id="loginId" placeholder="아이디 입력" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input id="loginPassword" type="password" placeholder="비밀번호 입력" autocomplete="current-password">
+      </div>
+      <button class="primary" onclick="login()">로그인</button>
+      <div id="loginMessage" class="message"></div>
+
+      <div id="employeeSignupLink" class="auth-switch">
+        계정이 없나요?
+        <button class="link-btn" onclick="showSignup()">직원 계정 만들기</button>
+      </div>
+
+    </div>
+
+    <div id="signupForm" class="hidden">
+      <div class="field">
+        <label>이름</label>
+        <input id="signupName" placeholder="직원 이름">
+      </div>
+      <div class="field">
+        <label>이메일</label>
+        <input id="signupEmail" type="email" placeholder="example@company.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>아이디</label>
+        <input id="signupId" placeholder="사용할 아이디">
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input id="signupPassword" type="password" placeholder="비밀번호">
+      </div>
+      <div class="field">
+        <label>비밀번호 확인</label>
+        <input id="signupPasswordConfirm" type="password" placeholder="비밀번호 다시 입력">
+      </div>
+      <button class="primary" onclick="signup()">직원 계정 생성</button>
+      <div id="signupMessage" class="message"></div>
+      <div class="auth-switch">
+        이미 계정이 있나요?
+        <button class="link-btn" onclick="showLogin()">로그인</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="appPage" class="hidden">
+  <header>
+    <div class="header-brand">Report Hub</div>
+    <div class="header-right">
+      <span id="currentUserLabel"></span>
+      <button class="logout" onclick="logout()">로그아웃</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar"></aside>
+    <main id="mainContent"></main>
+  </div>
+</section>
+
+<script>
+  /*
+    프로토타입 안내:
+    - 데이터는 localStorage에 저장됩니다.
+    - 실제 운영용에서는 인증/권한/비밀번호를 반드시 서버에서 처리해야 합니다.
+  */
+
+  const DEFAULT_CEO_ACCOUNT = {
+    id: "ceo",
+    password: "CEO2026!",
+    name: "CEO",
+    role: "ceo"
+  };
+
+  let CEO_ACCOUNT =
+    JSON.parse(localStorage.getItem("rh_ceo_account") || "null")
+    || { ...DEFAULT_CEO_ACCOUNT };
+
+  function saveCeoAccount() {
+    localStorage.setItem(
+      "rh_ceo_account",
+      JSON.stringify(CEO_ACCOUNT)
+    );
+  }
+
+  let currentUser = JSON.parse(sessionStorage.getItem("currentUser") || "null");
+  let selectedTags = [];
+  let selectedEditTags = [];
+  let pendingReportFiles = [];
+  let pendingEditAttachments = [];
+  let selectedFilterTag = "전체";
+  let draftReportContentHtml = "";
+  let draftEditContentHtml = "";
+  let activeRichEditorTarget = null;
+
+  let users = JSON.parse(localStorage.getItem("rh_users") || "[]");
+  let reports = JSON.parse(localStorage.getItem("rh_reports") || "[]");
+  let tags = JSON.parse(localStorage.getItem("rh_tags") || "null") || [
+    "연구사업부","생산부","영업부","진행중","완료","미완료","긴급","대표확인"
+  ];
+
+  let tagPriorities =
+    JSON.parse(localStorage.getItem("rh_tag_priorities") || "null") || {};
+
+  tags.forEach(tag => {
+    if (typeof tagPriorities[tag] !== "number") {
+      tagPriorities[tag] = 0;
+    }
+  });
+
+  function saveUsers() { localStorage.setItem("rh_users", JSON.stringify(users)); }
+  function saveReports() { localStorage.setItem("rh_reports", JSON.stringify(reports)); }
+  function saveTags() { localStorage.setItem("rh_tags", JSON.stringify(tags)); }
+  function saveTagPriorities() {
+    localStorage.setItem(
+      "rh_tag_priorities",
+      JSON.stringify(tagPriorities)
+    );
+  }
+
+  function showSignup() {
+    document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("signupForm").classList.remove("hidden");
+  }
+
+  function showLogin() {
+    document.getElementById("signupForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+  }
+
+  function signup() {
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim().toLowerCase();
+    const id = document.getElementById("signupId").value.trim();
+    const pw = document.getElementById("signupPassword").value;
+    const pw2 = document.getElementById("signupPasswordConfirm").value;
+    const msg = document.getElementById("signupMessage");
+
+    msg.textContent = "";
+
+    if (!name || !email || !id || !pw || !pw2) {
+      msg.textContent = "모든 항목을 입력해주세요.";
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      msg.textContent = "올바른 이메일 주소를 입력해주세요.";
+      return;
+    }
+
+    if (id.toLowerCase() === "ceo") {
+      msg.textContent = "CEO 아이디는 사용할 수 없습니다.";
+      return;
+    }
+
+    if (pw.length < 4) {
+      msg.textContent = "비밀번호는 4자 이상으로 입력해주세요.";
+      return;
+    }
+
+    if (pw !== pw2) {
+      msg.textContent = "비밀번호가 서로 다릅니다.";
+      return;
+    }
+
+    if (users.some(u => u.id.toLowerCase() === id.toLowerCase())) {
+      msg.textContent = "이미 사용 중인 아이디입니다.";
+      return;
+    }
+
+    if (users.some(u => String(u.email || "").toLowerCase() === email)) {
+      msg.textContent = "이미 가입된 이메일입니다. 한 이메일당 하나의 계정만 만들 수 있습니다.";
+      return;
+    }
+
+    users.push({
+      id,
+      email,
+      password: pw,
+      name,
+      role: "employee",
+      createdAt: new Date().toISOString()
+    });
+
+    saveUsers();
+
+    document.getElementById("loginId").value = id;
+    document.getElementById("signupName").value = "";
+    document.getElementById("signupEmail").value = "";
+    document.getElementById("signupId").value = "";
+    document.getElementById("signupPassword").value = "";
+    document.getElementById("signupPasswordConfirm").value = "";
+
+    showLogin();
+
+    document.getElementById("loginMessage").style.color = "#16a34a";
+    document.getElementById("loginMessage").textContent =
+      "계정이 생성되었습니다. 로그인해주세요.";
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || ""));
+  }
+
+  function login() {
+    const id = document.getElementById("loginId").value.trim();
+    const pw = document.getElementById("loginPassword").value;
+    const msg = document.getElementById("loginMessage");
+
+    msg.style.color = "#dc2626";
+    msg.textContent = "";
+
+    if (!id || !pw) {
+      msg.textContent = "아이디와 비밀번호를 입력해주세요.";
+      return;
+    }
+
+    let user = null;
+
+    if (id === CEO_ACCOUNT.id && pw === CEO_ACCOUNT.password) {
+      user = CEO_ACCOUNT;
+    }
+
+    if (!user) {
+      user = users.find(
+        u => u.id === id && u.password === pw && u.role === "employee"
+      ) || null;
+    }
+
+    if (!user) {
+      msg.textContent = "아이디 또는 비밀번호가 올바르지 않습니다.";
+      return;
+    }
+
+    currentUser = {
+      id: user.id,
+      name: user.name,
+      role: user.role
+    };
+
+    sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
+    selectedFilterTag = "전체";
+    selectedTags = [];
+
+    openApp();
+  }
+
+  function logout() {
+    currentUser = null;
+    sessionStorage.removeItem("currentUser");
+    document.getElementById("appPage").classList.add("hidden");
+    document.getElementById("authPage").classList.remove("hidden");
+    document.getElementById("loginPassword").value = "";
+    showLogin();
+  }
+
+  function openApp() {
+    document.getElementById("authPage").classList.add("hidden");
+    document.getElementById("appPage").classList.remove("hidden");
+    document.getElementById("currentUserLabel").textContent =
+      currentUser.role === "ceo" ? "CEO 계정" : `${currentUser.name}님`;
+
+    renderSidebar();
+
+    if (currentUser.role === "ceo") {
+      renderCeoDashboard();
+    } else {
+      renderEmployeeSubmit();
+    }
+  }
+
+  function renderSidebar() {
+    const sidebar = document.getElementById("sidebar");
+
+    if (currentUser.role === "ceo") {
+      sidebar.innerHTML = `
+        <div class="role">CEO MENU</div>
+        <button class="menu-btn active" data-menu="ceoReports" onclick="activateMenu(this); renderCeoDashboard()">전체 직원 보고서</button>
+        <button class="menu-btn" data-menu="tagBoard" onclick="activateMenu(this); renderTagOverviewBoard()">태그 한눈에 보기</button>
+        <button class="menu-btn" data-menu="dailyStatus" onclick="activateMenu(this); renderDailySubmissionStatus()">일일보고서 제출 현황</button>
+        <button class="menu-btn" data-menu="tagManage" onclick="activateMenu(this); renderTagManagement()">태그 관리</button>
+        <button class="menu-btn" data-menu="accountManage" onclick="activateMenu(this); renderCeoAccountManagement()">계정 관리</button>
+      `;
+    } else {
+      sidebar.innerHTML = `
+        <div class="role">EMPLOYEE MENU</div>
+        <button class="menu-btn active" onclick="activateMenu(this); renderEmployeeSubmit()">보고서 제출</button>
+        <button class="menu-btn" onclick="activateMenu(this); renderMyReports()">내 보고서</button>
+        <button class="menu-btn" onclick="activateMenu(this); renderAllEmployeeReports()">전체 직원 보고서</button>
+        <button class="menu-btn" onclick="activateMenu(this); renderTagOverviewBoard()">태그 한눈에 보기</button>
+        <button class="menu-btn" onclick="activateMenu(this); renderEmployeeAccountManagement()">계정 관리</button>
+      `;
+    }
+  }
+
+  function activateMenu(btn) {
+    document.querySelectorAll(".menu-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  }
+
+  /* EMPLOYEE */
+  function renderEmployeeSubmit() {
+    selectedTags = [];
+    pendingReportFiles = [];
+    draftReportContentHtml = "";
+    const main = document.getElementById("mainContent");
+    main.innerHTML = `
+      <h1 class="page-title">보고서 제출</h1>
+      <p class="page-desc">보고서를 작성하고 CEO가 등록한 태그를 선택해 제출하세요.</p>
+
+      <div class="card">
+        <div class="field">
+          <label>작성자</label>
+          <input value="${escapeHtml(currentUser.name)}" disabled>
+        </div>
+
+        <div class="field">
+          <label>제목</label>
+          <input id="reportTitle" placeholder="보고서 제목">
+        </div>
+
+        <div class="field">
+          <label>보고 내용</label>
+          <div id="reportContentLauncher" class="report-content-launcher empty" tabindex="0"
+               onclick="openRichReportEditor('submit')"
+               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openRichReportEditor('submit');}">
+            
+          </div>
+          <div class="hint"> </div>
+        </div>
+
+        <div class="field">
+          <label>태그</label>
+          <div id="selectedTagsBox" class="selected-tags"></div>
+          <div class="tag-input-wrap">
+            <input id="tagSearchInput" placeholder="# 을 입력하여 태그 선택" oninput="renderTagSuggestions()" autocomplete="off">
+            <div id="tagSuggestions" class="suggestions hidden"></div>
+          </div>
+          <div class="hint">직원은 새로운 태그를 만들 수 없고 CEO가 등록한 태그만 선택할 수 있습니다.</div>
+        </div>
+
+        <div class="field">
+          <label>첨부파일</label>
+          <div class="file-upload-panel">
+            <input id="reportFile" class="file-input-native" type="file" multiple accept="image/*,.pdf,.doc,.docx,.hwp,.hwpx" onchange="handleReportFilesSelected(this.files)">
+            <label class="file-picker-btn" for="reportFile">📎 파일 선택하기</label>
+            <div class="hint">이미지, PDF, Word(.doc/.docx), 한글(.hwp/.hwpx) · 여러 파일 선택 가능 · 파일당 최대 5MB</div>
+            <div id="selectedReportFiles" class="selected-file-list"></div>
+          </div>
+        </div>
+
+        <button class="primary" onclick="submitReport()">보고서 제출</button>
+      </div>
+    `;
+  }
+
+  function renderTagSuggestions() {
+    const input = document.getElementById("tagSearchInput");
+    const box = document.getElementById("tagSuggestions");
+    const value = input.value.trim();
+
+    if (!value.startsWith("#")) {
+      box.classList.add("hidden");
+      return;
+    }
+
+    const keyword = value.slice(1).toLowerCase();
+    const results = tags.filter(t =>
+      t.toLowerCase().includes(keyword) && !selectedTags.includes(t)
+    );
+
+    box.innerHTML = "";
+    if (!results.length) {
+      box.innerHTML = `<div class="suggestion" style="color:#9ca3af">선택 가능한 태그가 없습니다.</div>`;
+    } else {
+      results.forEach(tag => {
+        const el = document.createElement("div");
+        el.className = "suggestion";
+        el.textContent = "#" + tag;
+        el.onclick = () => {
+          selectedTags.push(tag);
+          input.value = "";
+          box.classList.add("hidden");
+          renderSelectedTagChips();
+        };
+        box.appendChild(el);
+      });
+    }
+    box.classList.remove("hidden");
+  }
+
+  function renderSelectedTagChips() {
+    const box = document.getElementById("selectedTagsBox");
+    if (!box) return;
+    box.innerHTML = "";
+    selectedTags.forEach(tag => {
+      const chip = document.createElement("span");
+      chip.className = "tag-chip";
+      chip.innerHTML = `#${escapeHtml(tag)} <button onclick="removeSelectedTag('${escapeJs(tag)}')">×</button>`;
+      box.appendChild(chip);
+    });
+  }
+
+  function removeSelectedTag(tag) {
+    selectedTags = selectedTags.filter(t => t !== tag);
+    renderSelectedTagChips();
+  }
+
+  function handleReportFilesSelected(fileList) {
+    const files = Array.from(fileList || []);
+    for (const file of files) {
+      const validation = validateReportFile(file);
+      if (!validation.ok) {
+        alert(`${file.name}: ${validation.message}`);
+        continue;
+      }
+      const duplicate = pendingReportFiles.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified);
+      if (!duplicate) pendingReportFiles.push(file);
+    }
+    const input = document.getElementById("reportFile");
+    if (input) input.value = "";
+    renderPendingReportFiles();
+  }
+
+  function renderPendingReportFiles() {
+    const box = document.getElementById("selectedReportFiles");
+    if (!box) return;
+    box.innerHTML = "";
+    pendingReportFiles.forEach((file, index) => {
+      const card = document.createElement("div");
+      card.className = "selected-file-card";
+      const isImage = String(file.type || "").startsWith("image/");
+      const left = isImage
+        ? `<img class="file-thumb" src="${URL.createObjectURL(file)}" alt="미리보기">`
+        : `<div class="file-type-icon">${escapeHtml(fileExtensionLabel(file.name))}</div>`;
+      card.innerHTML = `${left}<div class="file-card-info"><div class="file-card-name">${escapeHtml(file.name)}</div><div class="file-card-meta">${formatFileSize(file.size)}</div></div><button class="file-remove-btn" onclick="removePendingReportFile(${index})">삭제</button>`;
+      box.appendChild(card);
+    });
+  }
+
+  function removePendingReportFile(index) {
+    pendingReportFiles.splice(index, 1);
+    renderPendingReportFiles();
+  }
+
+  async function submitReport() {
+    const title = document.getElementById("reportTitle").value.trim();
+    const contentHtml = sanitizeRichHtml(draftReportContentHtml);
+    const content = richHtmlToText(contentHtml).trim();
+
+    if (!title || !content) {
+      alert("제목과 보고 내용을 모두 입력해주세요.");
+      return;
+    }
+
+    let attachments = [];
+    try {
+      attachments = await Promise.all(pendingReportFiles.map(fileToStoredAttachment));
+    } catch (error) {
+      alert("첨부파일을 읽는 중 문제가 발생했습니다.");
+      return;
+    }
+
+    const report = {
+      id: Date.now(),
+      authorId: currentUser.id,
+      authorName: currentUser.name,
+      title,
+      content,
+      contentHtml,
+      tags: [...selectedTags],
+      attachments,
+      createdAt: new Date().toLocaleString("ko-KR"),
+      createdDate: (() => {
+        const d = new Date();
+        return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, "0"), String(d.getDate()).padStart(2, "0")].join("-");
+      })()
+    };
+
+    reports.unshift(report);
+    try {
+      saveReports();
+    } catch (error) {
+      reports.shift();
+      alert("브라우저 저장공간이 부족합니다. 첨부파일 수나 크기를 줄여주세요.");
+      return;
+    }
+
+    pendingReportFiles = [];
+    alert("보고서가 제출되었습니다.");
+    renderMyReports();
+    document.querySelectorAll(".menu-btn").forEach(b => b.classList.remove("active"));
+    const btns = document.querySelectorAll(".menu-btn");
+    if (btns[1]) btns[1].classList.add("active");
+  }
+
+  function validateReportFile(file) {
+    const name = String(file && file.name || "");
+    const ext = name.includes(".") ? name.split(".").pop().toLowerCase() : "";
+    const imageExts = ["jpg","jpeg","png","gif","webp","bmp","svg"];
+    const allowedExts = [...imageExts, "pdf", "doc", "docx", "hwp", "hwpx"];
+
+    if (!allowedExts.includes(ext)) {
+      return {
+        ok:false,
+        message:"첨부할 수 없는 파일 형식입니다. 이미지, PDF, Word, 한글(HWP/HWPX) 파일만 업로드할 수 있습니다."
+      };
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return { ok:false, message:"프로토타입에서는 첨부파일을 5MB 이하로 올려주세요." };
+    }
+
+    return { ok:true };
+  }
+
+  function fileToStoredAttachment(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve({
+        name:file.name,
+        type:file.type || "application/octet-stream",
+        size:file.size,
+        dataUrl:reader.result
+      });
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function formatFileSize(bytes) {
+    const n = Number(bytes || 0);
+    if (n < 1024) return `${n} B`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+    return `${(n / 1024 / 1024).toFixed(1)} MB`;
+  }
+
+  function fileExtensionLabel(name) {
+    const ext = String(name || "").split(".").pop().toUpperCase();
+    if (["JPG","JPEG","PNG","GIF","WEBP","BMP","SVG"].includes(ext)) return "IMG";
+    if (ext === "PDF") return "PDF";
+    if (["DOC","DOCX"].includes(ext)) return "WORD";
+    if (["HWP","HWPX"].includes(ext)) return "HWP";
+    return "FILE";
+  }
+
+  function normalizedAttachments(report) {
+    if (Array.isArray(report && report.attachments)) return report.attachments;
+    if (report && report.attachment) return [report.attachment];
+    return [];
+  }
+
+  function isImageAttachment(file) {
+    return String(file && file.type || "").startsWith("image/") || /\.(jpe?g|png|gif|webp|bmp|svg)$/i.test(String(file && file.name || ""));
+  }
+
+  function isPdfAttachment(file) {
+    return String(file && file.type || "").includes("pdf") || /\.pdf$/i.test(String(file && file.name || ""));
+  }
+
+  function attachmentHtml(report) {
+    const files = normalizedAttachments(report).filter(f => f && f.dataUrl);
+    if (!files.length) return "";
+    return `
+      <div class="attachment-box">
+        <div class="attachment-title">📎 첨부파일 ${files.length}개</div>
+        <div class="attachment-grid">
+          ${files.map(file => `
+            <div>
+              <div class="attachment-card">
+                ${isImageAttachment(file) ? `<img class="file-thumb" src="${escapeHtml(file.dataUrl)}" alt="${escapeHtml(file.name || "이미지")}">` : `<div class="file-type-icon">${escapeHtml(fileExtensionLabel(file.name))}</div>`}
+                <div class="file-card-info">
+                  <div class="file-card-name">${escapeHtml(file.name || "첨부파일")}</div>
+                  <div class="file-card-meta">${formatFileSize(file.size)}</div>
+                </div>
+                <a class="attachment-link" href="${escapeHtml(file.dataUrl)}" download="${escapeHtml(file.name || "attachment")}">저장</a>
+              </div>
+              ${isImageAttachment(file) ? `<div class="attachment-preview"><img src="${escapeHtml(file.dataUrl)}" alt="미리보기"></div>` : ""}
+              ${isPdfAttachment(file) ? `<div class="attachment-preview"><iframe src="${escapeHtml(file.dataUrl)}" title="PDF 미리보기"></iframe></div>` : ""}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function getReportContentHtml(report) {
+    if (report && report.contentHtml) return sanitizeRichHtml(report.contentHtml);
+    return escapeHtml(report && report.content || "").replace(/\n/g, "<br>");
+  }
+
+  function richHtmlToText(html) {
+    const temp = document.createElement("div");
+    temp.innerHTML = sanitizeRichHtml(html || "");
+    return (temp.innerText || temp.textContent || "").replace(/\u00a0/g, " ");
+  }
+
+  function sanitizeRichHtml(html) {
+    const template = document.createElement("template");
+    template.innerHTML = String(html || "");
+    const allowedTags = new Set([
+      "P","DIV","BR","B","STRONG","I","EM","U","S","STRIKE","SPAN","FONT",
+      "UL","OL","LI","H1","H2","H3","H4","BLOCKQUOTE"
+    ]);
+    const allowedStyles = new Set(["color","background-color","text-align","font-weight","font-style","text-decoration"]);
+
+    function clean(node) {
+      Array.from(node.childNodes).forEach(child => {
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          if (!allowedTags.has(child.tagName)) {
+            const frag = document.createDocumentFragment();
+            while (child.firstChild) frag.appendChild(child.firstChild);
+            child.replaceWith(frag);
+            clean(node);
+            return;
+          }
+
+          Array.from(child.attributes).forEach(attr => {
+            const name = attr.name.toLowerCase();
+            if (name.startsWith("on")) {
+              child.removeAttribute(attr.name);
+              return;
+            }
+            if (name === "style") {
+              const safe = [];
+              String(attr.value || "").split(";").forEach(part => {
+                const idx = part.indexOf(":");
+                if (idx < 0) return;
+                const prop = part.slice(0, idx).trim().toLowerCase();
+                const value = part.slice(idx + 1).trim();
+                if (allowedStyles.has(prop) && !/url\s*\(|expression\s*\(/i.test(value)) {
+                  safe.push(`${prop}:${value}`);
+                }
+              });
+              if (safe.length) child.setAttribute("style", safe.join(";"));
+              else child.removeAttribute("style");
+              return;
+            }
+            if (child.tagName === "FONT" && (name === "color" || name === "face" || name === "size")) return;
+            child.removeAttribute(attr.name);
+          });
+          clean(child);
+        } else if (child.nodeType !== Node.TEXT_NODE) {
+          child.remove();
+        }
+      });
+    }
+
+    clean(template.content);
+    return template.innerHTML;
+  }
+
+  function updateContentLauncher(target) {
+    const isEdit = target === "edit";
+    const el = document.getElementById(isEdit ? "editReportContentLauncher" : "reportContentLauncher");
+    if (!el) return;
+    const html = sanitizeRichHtml(isEdit ? draftEditContentHtml : draftReportContentHtml);
+    const text = richHtmlToText(html).trim();
+    if (!text) {
+      el.classList.add("empty");
+      el.textContent = "클릭해서 보고 내용을 작성하세요.";
+      return;
+    }
+    el.classList.remove("empty");
+    el.innerHTML = html;
+  }
+
+  function openRichReportEditor(target) {
+    activeRichEditorTarget = target === "edit" ? "edit" : "submit";
+    const currentHtml = activeRichEditorTarget === "edit" ? draftEditContentHtml : draftReportContentHtml;
+
+    const old = document.getElementById("richReportEditorModal");
+    if (old) old.remove();
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "rich-editor-backdrop";
+    backdrop.id = "richReportEditorModal";
+    backdrop.innerHTML = `
+      <div class="rich-editor-window" onclick="event.stopPropagation()">
+        <div class="rich-editor-topbar">
+          <div>
+            <div class="rich-editor-title">보고 내용 작성</div>
+            <div class="rich-editor-subtitle">문서처럼 자유롭게 작성하고 서식을 적용할 수 있습니다.</div>
+          </div>
+          <button class="rich-editor-close" onclick="closeRichReportEditor(false)" title="닫기">✕</button>
+        </div>
+
+        <div class="rich-editor-toolbar" onmousedown="if(event.target.tagName!=='SELECT' && event.target.tagName!=='INPUT') event.preventDefault()">
+          <button class="editor-tool" onclick="richEditorCommand('undo')" title="실행 취소">↶</button>
+          <button class="editor-tool" onclick="richEditorCommand('redo')" title="다시 실행">↷</button>
+          <div class="editor-divider"></div>
+
+          <select class="editor-select" onchange="richEditorFormatBlock(this.value);this.value='P'" title="문단 스타일">
+            <option value="P">본문</option>
+            <option value="H1">제목 1</option>
+            <option value="H2">제목 2</option>
+            <option value="H3">제목 3</option>
+          </select>
+
+          <button class="editor-tool" onclick="richEditorCommand('bold')" title="굵게"><b>B</b></button>
+          <button class="editor-tool" onclick="richEditorCommand('italic')" title="기울임"><i>I</i></button>
+          <button class="editor-tool" onclick="richEditorCommand('underline')" title="밑줄"><u>U</u></button>
+          <button class="editor-tool" onclick="richEditorCommand('strikeThrough')" title="취소선"><s>S</s></button>
+          <div class="editor-divider"></div>
+
+          <button class="editor-tool red-text" onclick="richEditorCommand('foreColor','#dc2626')" title="빨간 글씨">A</button>
+          <label class="editor-tool editor-color-label" title="글자색 선택">A▾
+            <input class="editor-color-input" type="color" value="#111827" onchange="richEditorCommand('foreColor',this.value)">
+          </label>
+          <label class="editor-tool editor-color-label" title="형광펜">▰
+            <input class="editor-color-input" type="color" value="#fff59d" onchange="richEditorCommand('hiliteColor',this.value)">
+          </label>
+          <div class="editor-divider"></div>
+
+          <button class="editor-tool" onclick="richEditorCommand('justifyLeft')" title="왼쪽 정렬">≡</button>
+          <button class="editor-tool" onclick="richEditorCommand('justifyCenter')" title="가운데 정렬">≣</button>
+          <button class="editor-tool" onclick="richEditorCommand('justifyRight')" title="오른쪽 정렬">≡›</button>
+          <div class="editor-divider"></div>
+
+          <button class="editor-tool" onclick="richEditorCommand('insertUnorderedList')" title="글머리표">• 목록</button>
+          <button class="editor-tool" onclick="richEditorCommand('insertOrderedList')" title="번호 목록">1. 목록</button>
+          <button class="editor-tool" onclick="richEditorCommand('outdent')" title="내어쓰기">⇤</button>
+          <button class="editor-tool" onclick="richEditorCommand('indent')" title="들여쓰기">⇥</button>
+          <button class="editor-tool" onclick="richEditorCommand('removeFormat')" title="서식 지우기">Tx</button>
+        </div>
+
+        <div class="rich-editor-canvas-wrap">
+          <div id="richReportEditorCanvas" class="rich-editor-canvas" contenteditable="true"
+               spellcheck="true" data-placeholder="오늘 진행한 업무, 문제점, 예정 업무 등을 작성하세요."></div>
+        </div>
+
+        <div class="rich-editor-bottom">
+          <div class="rich-editor-tip">Tab: 들여쓰기 · Shift+Tab: 내어쓰기 · Ctrl/Cmd+B: 굵게 · Ctrl/Cmd+U: 밑줄</div>
+          <div class="rich-editor-buttons">
+            <button class="secondary" onclick="closeRichReportEditor(false)">취소</button>
+            <button class="primary" onclick="saveRichReportEditor()">작성 완료</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    backdrop.onclick = () => closeRichReportEditor(false);
+    document.body.appendChild(backdrop);
+
+    const editor = document.getElementById("richReportEditorCanvas");
+    editor.innerHTML = sanitizeRichHtml(currentHtml || "");
+    editor.addEventListener("keydown", handleRichEditorKeydown);
+    setTimeout(() => editor.focus(), 0);
+  }
+
+  function closeRichReportEditor(save) {
+    if (save) saveRichReportEditor();
+    const modal = document.getElementById("richReportEditorModal");
+    if (modal) modal.remove();
+    activeRichEditorTarget = null;
+  }
+
+  function saveRichReportEditor() {
+    const editor = document.getElementById("richReportEditorCanvas");
+    if (!editor) return;
+    const html = sanitizeRichHtml(editor.innerHTML);
+    const target = activeRichEditorTarget;
+    if (target === "edit") draftEditContentHtml = html;
+    else draftReportContentHtml = html;
+
+    const modal = document.getElementById("richReportEditorModal");
+    if (modal) modal.remove();
+    activeRichEditorTarget = null;
+    updateContentLauncher(target);
+  }
+
+  function focusRichEditor() {
+    const editor = document.getElementById("richReportEditorCanvas");
+    if (editor) editor.focus();
+  }
+
+  function richEditorCommand(command, value = null) {
+    focusRichEditor();
+    document.execCommand(command, false, value);
+  }
+
+  function richEditorFormatBlock(tag) {
+    focusRichEditor();
+    document.execCommand("formatBlock", false, tag || "P");
+  }
+
+  function handleRichEditorKeydown(event) {
+    if (event.key !== "Tab") return;
+    event.preventDefault();
+
+    const selection = window.getSelection();
+    let node = selection && selection.anchorNode;
+    if (node && node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+    const inList = node && node.closest && node.closest("li");
+
+    if (inList) {
+      document.execCommand(event.shiftKey ? "outdent" : "indent", false, null);
+      return;
+    }
+
+    if (event.shiftKey) {
+      document.execCommand("outdent", false, null);
+    } else {
+      document.execCommand("insertHTML", false, "&nbsp;&nbsp;&nbsp;&nbsp;");
+    }
+  }
+
+  function canEditReport(report) {
+    return !!(
+      currentUser &&
+      currentUser.role === "employee" &&
+      String(report.authorId) === String(currentUser.id)
+    );
+  }
+
+  function openEditReport(reportId) {
+    const report = reports.find(r => String(r.id) === String(reportId));
+    if (!report || !canEditReport(report)) {
+      alert("본인이 제출한 보고서만 수정할 수 있습니다.");
+      return;
+    }
+
+    selectedEditTags = [...(report.tags || [])];
+    pendingEditAttachments = normalizedAttachments(report).map(file => ({ ...file }));
+    draftEditContentHtml = getReportContentHtml(report);
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "edit-modal-backdrop";
+    backdrop.id = "editReportModal";
+
+    backdrop.innerHTML = `
+      <div class="edit-modal-card" onclick="event.stopPropagation()">
+        <div class="report-modal-head">
+          <div>
+            <div class="report-title">보고서 수정</div>
+            <div class="report-meta">본인이 제출한 보고서만 수정할 수 있습니다.</div>
+          </div>
+          <button class="report-modal-close" onclick="closeEditReport()">✕</button>
+        </div>
+
+        <div class="field">
+          <label>제목</label>
+          <input id="editReportTitle" value="${escapeHtml(report.title || "")}">
+        </div>
+
+        <div class="field">
+          <label>보고 내용</label>
+          <div id="editReportContentLauncher" class="report-content-launcher" tabindex="0"
+               onclick="openRichReportEditor('edit')"
+               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openRichReportEditor('edit');}">
+            ${getReportContentHtml(report)}
+          </div>
+          <div class="hint">클릭하면 넓은 문서 편집기에서 수정할 수 있습니다.</div>
+        </div>
+
+        <div class="field">
+          <label>태그</label>
+          <div id="editSelectedTagsBox" class="selected-tags"></div>
+          <div class="tag-input-wrap">
+            <input id="editTagSearchInput" placeholder="# 을 입력하여 태그 선택" oninput="renderEditTagSuggestions()" autocomplete="off">
+            <div id="editTagSuggestions" class="suggestions hidden"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>첨부파일 관리</label>
+          <div class="file-upload-panel">
+            <input id="editReportFile" class="file-input-native" type="file" multiple accept="image/*,.pdf,.doc,.docx,.hwp,.hwpx" onchange="handleEditFilesSelected(this.files)">
+            <label class="file-picker-btn" for="editReportFile">📎 파일 추가하기</label>
+            <div class="hint">기존 파일을 개별 삭제하거나 새 파일을 여러 개 추가할 수 있습니다.</div>
+            <div id="editAttachmentList" class="selected-file-list"></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="secondary grow" onclick="closeEditReport()">취소</button>
+          <button class="primary grow" onclick="saveEditedReport('${escapeJs(String(report.id))}')">수정 저장</button>
+        </div>
+      </div>
+    `;
+
+    backdrop.onclick = closeEditReport;
+    document.body.appendChild(backdrop);
+    renderEditSelectedTagChips();
+    renderEditAttachmentList();
+  }
+
+  function closeEditReport() {
+    const modal = document.getElementById("editReportModal");
+    if (modal) modal.remove();
+    selectedEditTags = [];
+    pendingEditAttachments = [];
+    draftEditContentHtml = "";
+  }
+
+  function renderEditTagSuggestions() {
+    const input = document.getElementById("editTagSearchInput");
+    const box = document.getElementById("editTagSuggestions");
+    if (!input || !box) return;
+
+    const value = input.value.trim();
+    if (!value.startsWith("#")) {
+      box.classList.add("hidden");
+      return;
+    }
+
+    const keyword = value.slice(1).toLowerCase();
+    const results = tags.filter(t =>
+      t.toLowerCase().includes(keyword) && !selectedEditTags.includes(t)
+    );
+
+    box.innerHTML = results.length ? "" : `<div class="suggestion" style="color:#9ca3af">선택 가능한 태그가 없습니다.</div>`;
+
+    results.forEach(tag => {
+      const el = document.createElement("div");
+      el.className = "suggestion";
+      el.textContent = "#" + tag;
+      el.onclick = () => {
+        selectedEditTags.push(tag);
+        input.value = "";
+        box.classList.add("hidden");
+        renderEditSelectedTagChips();
+      };
+      box.appendChild(el);
+    });
+
+    box.classList.remove("hidden");
+  }
+
+  function renderEditSelectedTagChips() {
+    const box = document.getElementById("editSelectedTagsBox");
+    if (!box) return;
+    box.innerHTML = "";
+    selectedEditTags.forEach(tag => {
+      const chip = document.createElement("span");
+      chip.className = "tag-chip";
+      chip.innerHTML = `#${escapeHtml(tag)} <button onclick="removeEditSelectedTag('${escapeJs(tag)}')">×</button>`;
+      box.appendChild(chip);
+    });
+  }
+
+  function removeEditSelectedTag(tag) {
+    selectedEditTags = selectedEditTags.filter(t => t !== tag);
+    renderEditSelectedTagChips();
+  }
+
+  async function handleEditFilesSelected(fileList) {
+    const files = Array.from(fileList || []);
+    for (const file of files) {
+      const validation = validateReportFile(file);
+      if (!validation.ok) {
+        alert(`${file.name}: ${validation.message}`);
+        continue;
+      }
+      try {
+        const stored = await fileToStoredAttachment(file);
+        const duplicate = pendingEditAttachments.some(f => f.name === stored.name && Number(f.size) === Number(stored.size));
+        if (!duplicate) pendingEditAttachments.push(stored);
+      } catch (e) {
+        alert(`${file.name}: 파일을 읽지 못했습니다.`);
+      }
+    }
+    const input = document.getElementById("editReportFile");
+    if (input) input.value = "";
+    renderEditAttachmentList();
+  }
+
+  function removeEditAttachment(index) {
+    pendingEditAttachments.splice(index, 1);
+    renderEditAttachmentList();
+  }
+
+  function renderEditAttachmentList() {
+    const box = document.getElementById("editAttachmentList");
+    if (!box) return;
+    box.innerHTML = "";
+    if (!pendingEditAttachments.length) {
+      box.innerHTML = `<div class="hint" style="margin-top:8px">첨부된 파일이 없습니다.</div>`;
+      return;
+    }
+    pendingEditAttachments.forEach((file, index) => {
+      const card = document.createElement("div");
+      card.className = "selected-file-card";
+      const left = isImageAttachment(file)
+        ? `<img class="file-thumb" src="${escapeHtml(file.dataUrl)}" alt="미리보기">`
+        : `<div class="file-type-icon">${escapeHtml(fileExtensionLabel(file.name))}</div>`;
+      card.innerHTML = `${left}<div class="file-card-info"><div class="file-card-name">${escapeHtml(file.name || "첨부파일")}</div><div class="file-card-meta">${formatFileSize(file.size)}</div></div><button class="file-remove-btn" onclick="removeEditAttachment(${index})">삭제</button>`;
+      box.appendChild(card);
+    });
+  }
+
+  async function saveEditedReport(reportId) {
+    const index = reports.findIndex(r => String(r.id) === String(reportId));
+    if (index < 0) return;
+
+    const report = reports[index];
+    if (!canEditReport(report)) {
+      alert("본인이 제출한 보고서만 수정할 수 있습니다.");
+      return;
+    }
+
+    const title = document.getElementById("editReportTitle").value.trim();
+    const contentHtml = sanitizeRichHtml(draftEditContentHtml);
+    const content = richHtmlToText(contentHtml).trim();
+    if (!title || !content) {
+      alert("제목과 보고 내용을 모두 입력해주세요.");
+      return;
+    }
+
+    const original = reports[index];
+    reports[index] = {
+      ...report,
+      title,
+      content,
+      contentHtml,
+      tags:[...selectedEditTags],
+      attachments: pendingEditAttachments.map(file => ({ ...file })),
+      attachment: undefined,
+      updatedAt:new Date().toLocaleString("ko-KR")
+    };
+
+    try {
+      saveReports();
+    } catch (error) {
+      reports[index] = original;
+      alert("브라우저 저장공간이 부족합니다. 첨부파일 수나 크기를 줄여주세요.");
+      return;
+    }
+
+    closeEditReport();
+    alert("보고서가 수정되었습니다.");
+    renderMyReports();
+  }
+
+  function renderMyReports() {
+    const mine = reports.filter(r => r.authorId === currentUser.id);
+    const main = document.getElementById("mainContent");
+
+    main.innerHTML = `
+      <h1 class="page-title">내 보고서</h1>
+      <p class="page-desc">내가 제출한 보고서만 표시됩니다. 다른 직원의 보고서는 볼 수 없습니다.</p>
+      <div id="myReportList"></div>
+    `;
+
+    const list = document.getElementById("myReportList");
+    if (!mine.length) {
+      list.innerHTML = `<div class="empty">아직 제출한 보고서가 없습니다.</div>`;
+      return;
+    }
+
+    mine.forEach(report => list.appendChild(createReportCard(report, false)));
+  }
+
+
+  function renderAllEmployeeReports() {
+    const main = document.getElementById("mainContent");
+
+    const grouped = {};
+    reports.forEach(report => {
+      const name = report.authorName || "이름 없음";
+      if (!grouped[name]) grouped[name] = [];
+      grouped[name].push(report);
+    });
+
+    const names = Object.keys(grouped).sort((a, b) =>
+      a.localeCompare(b, "ko")
+    );
+
+    main.innerHTML = `
+      <h1 class="page-title">전체 직원 보고서</h1>
+      <p class="page-desc">직원들이 제출한 보고서를 작성자 이름별로 확인할 수 있습니다.</p>
+
+      <div class="card">
+        <div class="field" style="margin-bottom:0">
+          <label>직원 또는 보고서 검색</label>
+          <input
+            id="employeeReportSearch"
+            placeholder="직원 이름, 제목, 내용, 태그 검색"
+            oninput="renderEmployeeReportGroups()"
+          >
+        </div>
+      </div>
+
+      <div id="employeeReportGroups"></div>
+    `;
+
+    renderEmployeeReportGroups();
+  }
+
+  function renderEmployeeReportGroups() {
+    const container = document.getElementById("employeeReportGroups");
+    if (!container) return;
+
+    const searchEl = document.getElementById("employeeReportSearch");
+    const q = (searchEl ? searchEl.value : "").trim().toLowerCase();
+
+    const filteredReports = reports.filter(report => {
+      return (
+        (report.authorName || "").toLowerCase().includes(q) ||
+        (report.title || "").toLowerCase().includes(q) ||
+        (report.content || "").toLowerCase().includes(q) ||
+        (report.tags || []).some(tag => tag.toLowerCase().includes(q))
+      );
+    });
+
+    const grouped = {};
+    filteredReports.forEach(report => {
+      const name = report.authorName || "이름 없음";
+      if (!grouped[name]) grouped[name] = [];
+      grouped[name].push(report);
+    });
+
+    const names = Object.keys(grouped).sort((a, b) =>
+      a.localeCompare(b, "ko")
+    );
+
+    container.innerHTML = "";
+
+    if (!names.length) {
+      container.innerHTML =
+        `<div class="empty">조건에 맞는 직원 보고서가 없습니다.</div>`;
+      return;
+    }
+
+    names.forEach((name, index) => {
+      const group = document.createElement("section");
+      group.className = "employee-group";
+
+      const header = document.createElement("div");
+      header.className = "employee-group-header";
+
+      const left = document.createElement("div");
+
+      const nameEl = document.createElement("div");
+      nameEl.className = "employee-name";
+      nameEl.textContent = "👤 " + name;
+
+      const countEl = document.createElement("div");
+      countEl.className = "employee-report-count";
+      countEl.textContent = `${grouped[name].length}개의 보고서`;
+
+      left.appendChild(nameEl);
+      left.appendChild(countEl);
+
+      const arrow = document.createElement("div");
+      arrow.textContent = "▼";
+      arrow.style.color = "#6b7280";
+      arrow.style.fontSize = "13px";
+
+      header.appendChild(left);
+      header.appendChild(arrow);
+
+      const body = document.createElement("div");
+      body.className = "employee-group-body";
+
+      grouped[name].forEach(report => {
+        body.appendChild(createReportCard(report, false));
+      });
+
+      header.onclick = () => {
+        const hidden = body.classList.toggle("hidden");
+        arrow.textContent = hidden ? "▶" : "▼";
+      };
+
+      group.appendChild(header);
+      group.appendChild(body);
+      container.appendChild(group);
+    });
+  }
+
+
+
+  /* =========================================================
+     태그별 한눈에 보기 보드
+  ========================================================= */
+
+  function renderTagOverviewBoard() {
+    const main = document.getElementById("mainContent");
+
+    main.innerHTML = `
+      <h1 class="page-title">태그 한눈에 보기</h1>
+      <p class="page-desc">
+        해시태그별로 보고서를 한 화면에서 확인할 수 있습니다.
+        각 보고서에는 작성자, 작성 날짜, 보고서 제목이 표시됩니다.
+      </p>
+
+      <div class="tag-board-wrap">
+        <div id="tagBoard" class="tag-board"></div>
+      </div>
+    `;
+
+    renderTagBoardColumns();
+
+    // 창 크기가 바뀌면 태그 카드 크기와 행/열을 즉시 다시 맞춤
+    if (!window.__rhTagBoardResizeBound) {
+      window.__rhTagBoardResizeBound = true;
+      let resizeTimer = null;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const activeBoard = document.getElementById("tagBoard");
+          if (activeBoard) renderTagBoardColumns();
+        }, 80);
+      });
+    }
+  }
+
+  function renderTagBoardColumns() {
+    const board = document.getElementById("tagBoard");
+    if (!board) return;
+
+    board.innerHTML = "";
+
+    if (!tags.length) {
+      board.innerHTML = `<div class="empty">등록된 태그가 없습니다.</div>`;
+      return;
+    }
+
+    const reportCountByTag = {};
+    tags.forEach(tag => {
+      reportCountByTag[tag] = reports.filter(report =>
+        (report.tags || []).includes(tag)
+      ).length;
+    });
+
+    // 1) 우선순위가 높은 태그가 먼저
+    // 2) 같은 우선순위라면 보고서가 많은 태그가 먼저
+    // 3) 모두 같으면 기존 태그 등록 순서를 유지
+    const sortedTags = [...tags].sort((a, b) => {
+      const pa = Number(tagPriorities[a] || 0);
+      const pb = Number(tagPriorities[b] || 0);
+      if (pb !== pa) return pb - pa;
+
+      const countDiff = Number(reportCountByTag[b] || 0) - Number(reportCountByTag[a] || 0);
+      if (countDiff !== 0) return countDiff;
+
+      return tags.indexOf(a) - tags.indexOf(b);
+    });
+
+    // 현재 화면의 남은 영역을 태그 카드들이 항상 꽉 채우도록 행/열을 자동 계산
+    const wrap = board.closest(".tag-board-wrap");
+    const tagCount = sortedTags.length;
+    const viewportWidth = Math.max(320, window.innerWidth || 1200);
+    const viewportHeight = Math.max(480, window.innerHeight || 800);
+
+    // 제목/설명 아래부터 화면 하단까지를 보드 높이로 사용
+    if (wrap) {
+      const top = wrap.getBoundingClientRect().top;
+      const availableHeight = Math.max(300, viewportHeight - top - 18);
+      wrap.style.setProperty("--tag-board-height", availableHeight + "px");
+    }
+
+    const boardWidth = Math.max(280, board.clientWidth || viewportWidth);
+    const boardHeight = Math.max(300, wrap ? wrap.clientHeight : viewportHeight * 0.72);
+    const aspect = boardWidth / boardHeight;
+
+    // 화면 비율에 맞춰 가장 균형 잡힌 cols/rows 조합 선택
+    let bestCols = 1;
+    let bestRows = tagCount;
+    let bestScore = Infinity;
+    for (let cols = 1; cols <= tagCount; cols++) {
+      const rows = Math.ceil(tagCount / cols);
+      const cellAspect = (boardWidth / cols) / (boardHeight / rows);
+      const emptyCells = cols * rows - tagCount;
+      const targetCellAspect = viewportWidth < 640 ? 1.25 : 1.45;
+      const score = Math.abs(Math.log(cellAspect / targetCellAspect)) + emptyCells * 0.12;
+      if (score < bestScore) {
+        bestScore = score;
+        bestCols = cols;
+        bestRows = rows;
+      }
+    }
+
+    // 아주 좁은 화면에서는 과도하게 많은 열이 생기지 않도록 제한
+    if (viewportWidth < 560) bestCols = Math.min(bestCols, 3);
+    bestRows = Math.ceil(tagCount / bestCols);
+
+    const density = Math.max(bestCols, bestRows);
+    const gap = density >= 6 ? 10 : density >= 4 ? 14 : 18;
+    const padding = density >= 7 ? 7 : density >= 5 ? 9 : density >= 4 ? 11 : 14;
+    const titleSize = density >= 7 ? 12 : density >= 6 ? 13 : density >= 5 ? 14 : density >= 4 ? 16 : 20;
+    const countSize = density >= 6 ? 9 : 10;
+    const toggleSize = density >= 6 ? 23 : density >= 4 ? 26 : 30;
+
+    board.style.setProperty("--tag-board-cols", bestCols);
+    board.style.setProperty("--tag-board-rows", bestRows);
+    board.style.setProperty("--tag-board-gap", gap + "px");
+    board.style.setProperty("--tag-card-padding", padding + "px");
+    board.style.setProperty("--tag-title-size", titleSize + "px");
+    board.style.setProperty("--tag-count-size", countSize + "px");
+    board.style.setProperty("--tag-toggle-size", toggleSize + "px");
+
+    sortedTags.forEach(tag => {
+      const taggedReports = reports
+        .filter(report => (report.tags || []).includes(tag))
+        .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+
+      const column = document.createElement("section");
+      column.className = "tag-column";
+
+      const heading = document.createElement("div");
+      heading.className = "tag-column-title";
+      const priority = Number(tagPriorities[tag] || 0);
+      const priorityLabel =
+        priority >= 3 ? "최우선" :
+        priority === 2 ? "높음" :
+        priority === 1 ? "보통" :
+        "기본";
+
+      const left = document.createElement("div");
+      left.className = "tag-column-title-left";
+      left.innerHTML =
+        `<span class="tag-column-name">#${escapeHtml(tag)} ${priority > 0 ? `<span class="priority-badge">★ ${priorityLabel}</span>` : ""}</span>
+         <span class="tag-column-count">${taggedReports.length}개의 보고서</span>`;
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "tag-toggle";
+      toggle.textContent = "＋";
+      toggle.title = "보고서 펼치기";
+
+      heading.appendChild(left);
+      heading.appendChild(toggle);
+      column.appendChild(heading);
+
+      const reportList = document.createElement("div");
+      reportList.className = "tag-report-list hidden";
+
+      if (!taggedReports.length) {
+        const empty = document.createElement("div");
+        empty.className = "tag-column-empty";
+        empty.textContent = "이 태그로 등록된 보고서가 없습니다.";
+        reportList.appendChild(empty);
+      } else {
+        taggedReports.forEach(report => {
+          const mini = document.createElement("div");
+          mini.className = "tag-report-mini";
+          mini.onclick = (event) => {
+            event.stopPropagation();
+            openBoardReportDetail(report.id);
+          };
+
+          const author = document.createElement("div");
+          author.className = "tag-report-author";
+          author.textContent = report.authorName || "이름 없음";
+
+          const date = document.createElement("div");
+          date.className = "tag-report-date";
+          date.textContent = formatBoardReportDate(report);
+
+          const title = document.createElement("div");
+          title.className = "tag-report-title";
+          title.textContent = report.title || "제목 없음";
+
+          mini.appendChild(author);
+          mini.appendChild(date);
+          mini.appendChild(title);
+          reportList.appendChild(mini);
+        });
+      }
+
+      heading.onclick = () => {
+        const isHidden = reportList.classList.toggle("hidden");
+        column.classList.toggle("expanded", !isHidden);
+        toggle.textContent = isHidden ? "＋" : "−";
+        toggle.title = isHidden ? "보고서 펼치기" : "보고서 접기";
+      };
+
+      toggle.onclick = (event) => {
+        event.stopPropagation();
+        heading.click();
+      };
+
+      column.appendChild(reportList);
+      board.appendChild(column);
+    });
+
+    if (!board.children.length) {
+      board.innerHTML = `<div class="empty">등록된 태그가 없습니다.</div>`;
+    }
+  }
+
+  function formatBoardReportDate(report) {
+    if (report.createdDate) {
+      return report.createdDate.replaceAll("-", ".");
+    }
+
+    const raw = String(report.createdAt || "");
+    const nums = raw.match(/\d+/g);
+
+    if (nums && nums.length >= 3) {
+      return `${nums[0]}.${String(nums[1]).padStart(2,"0")}.${String(nums[2]).padStart(2,"0")}`;
+    }
+
+    return raw || "-";
+  }
+
+  function openBoardReportDetail(reportId) {
+    const report = reports.find(r => String(r.id) === String(reportId));
+    if (!report) return;
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "report-modal-backdrop";
+    backdrop.id = "boardReportModal";
+
+    const tagHtml = (report.tags || [])
+      .map(tag => `<span class="tag-chip">#${escapeHtml(tag)}</span>`)
+      .join("");
+
+    backdrop.innerHTML = `
+      <div class="report-modal-card" onclick="event.stopPropagation()">
+        <div class="report-modal-head">
+          <div>
+            <div class="report-title">${escapeHtml(report.title || "제목 없음")}</div>
+            <div class="report-meta">
+              작성자: ${escapeHtml(report.authorName || "이름 없음")}
+              · 등록일: ${escapeHtml(report.createdAt || "-")}
+            </div>
+          </div>
+          <button class="report-modal-close" onclick="closeBoardReportDetail()">✕</button>
+        </div>
+
+        <div class="report-body rich-content">${getReportContentHtml(report)}</div>
+        ${attachmentHtml(report)}
+        <div class="report-tags">${tagHtml}</div>
+      </div>
+    `;
+
+    backdrop.onclick = closeBoardReportDetail;
+    document.body.appendChild(backdrop);
+  }
+
+  function closeBoardReportDetail() {
+    const modal = document.getElementById("boardReportModal");
+    if (modal) modal.remove();
+  }
+
+  /* =========================================================
+     직원 계정 관리
+  ========================================================= */
+
+  function renderEmployeeAccountManagement() {
+    if (!currentUser || currentUser.role !== "employee") return;
+
+    const user = users.find(u => u.id === currentUser.id);
+    if (!user) {
+      alert("계정 정보를 찾을 수 없습니다.");
+      logout();
+      return;
+    }
+
+    const main = document.getElementById("mainContent");
+
+    main.innerHTML = `
+      <h1 class="page-title">계정 관리</h1>
+      <p class="page-desc">내 계정 정보를 수정하거나 계정을 삭제할 수 있습니다.</p>
+
+      <div class="card">
+        <h3>내 정보 수정</h3>
+
+        <div class="account-grid">
+          <div class="field">
+            <label>이름</label>
+            <input id="employeeManageName" value="${escapeHtml(user.name)}">
+          </div>
+
+          <div class="field">
+            <label>이메일</label>
+            <input id="employeeManageEmail" type="email" value="${escapeHtml(user.email || "")}">
+          </div>
+
+          <div class="field">
+            <label>아이디</label>
+            <input id="employeeManageId" value="${escapeHtml(user.id)}">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>현재 비밀번호</label>
+          <input id="employeeCurrentPassword" type="password" placeholder="현재 비밀번호">
+        </div>
+
+        <div class="account-grid">
+          <div class="field">
+            <label>새 비밀번호</label>
+            <input id="employeeNewPassword" type="password" placeholder="변경하지 않으려면 비워두세요">
+          </div>
+
+          <div class="field">
+            <label>새 비밀번호 확인</label>
+            <input id="employeeNewPasswordConfirm" type="password" placeholder="새 비밀번호 확인">
+          </div>
+        </div>
+
+        <button class="primary" onclick="updateMyEmployeeAccount()">계정 정보 저장</button>
+      </div>
+
+      <div class="card">
+        <h3 style="color:#b91c1c">계정 삭제</h3>
+        <p style="color:#6b7280;line-height:1.6">
+          계정을 삭제하면 이 계정으로 다시 로그인할 수 없습니다.
+          이 프로토타입에서는 계정 삭제 시 해당 직원이 제출한 보고서도 함께 삭제됩니다.
+        </p>
+
+        <div class="field">
+          <label>삭제 확인을 위한 현재 비밀번호</label>
+          <input id="employeeDeletePassword" type="password" placeholder="현재 비밀번호">
+        </div>
+
+        <button class="danger" onclick="deleteMyEmployeeAccount()">내 계정 삭제</button>
+      </div>
+    `;
+  }
+
+  function updateMyEmployeeAccount() {
+    if (!currentUser || currentUser.role !== "employee") return;
+
+    const index = users.findIndex(u => u.id === currentUser.id);
+    if (index < 0) return;
+
+    const user = users[index];
+    const name = document.getElementById("employeeManageName").value.trim();
+    const email = document.getElementById("employeeManageEmail").value.trim().toLowerCase();
+    const newId = document.getElementById("employeeManageId").value.trim();
+    const currentPassword = document.getElementById("employeeCurrentPassword").value;
+    const newPassword = document.getElementById("employeeNewPassword").value;
+    const newPasswordConfirm = document.getElementById("employeeNewPasswordConfirm").value;
+
+    if (!name || !email || !newId) {
+      alert("이름, 이메일, 아이디를 모두 입력해주세요.");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      alert("올바른 이메일 주소를 입력해주세요.");
+      return;
+    }
+
+    if (currentPassword !== user.password) {
+      alert("현재 비밀번호가 올바르지 않습니다.");
+      return;
+    }
+
+    if (newId.toLowerCase() === "ceo") {
+      alert("CEO 아이디는 사용할 수 없습니다.");
+      return;
+    }
+
+    const duplicate = users.some((u, i) =>
+      i !== index &&
+      u.id.toLowerCase() === newId.toLowerCase()
+    );
+
+    if (duplicate) {
+      alert("이미 사용 중인 아이디입니다.");
+      return;
+    }
+
+    const emailDuplicate = users.some((u, i) =>
+      i !== index &&
+      String(u.email || "").toLowerCase() === email
+    );
+
+    if (emailDuplicate) {
+      alert("이미 다른 계정에서 사용 중인 이메일입니다. 한 이메일당 하나의 계정만 사용할 수 있습니다.");
+      return;
+    }
+
+    if (newPassword) {
+      if (newPassword.length < 4) {
+        alert("새 비밀번호는 4자 이상이어야 합니다.");
+        return;
+      }
+
+      if (newPassword !== newPasswordConfirm) {
+        alert("새 비밀번호가 서로 다릅니다.");
+        return;
+      }
+    }
+
+    const oldId = user.id;
+
+    users[index] = {
+      ...user,
+      id: newId,
+      name,
+      email,
+      password: newPassword || user.password
+    };
+
+    reports = reports.map(report => {
+      if (report.authorId === oldId) {
+        return {
+          ...report,
+          authorId: newId,
+          authorName: name
+        };
+      }
+      return report;
+    });
+
+    saveUsers();
+    saveReports();
+
+    currentUser = {
+      id: newId,
+      name,
+      role: "employee"
+    };
+
+    sessionStorage.setItem(
+      "currentUser",
+      JSON.stringify(currentUser)
+    );
+
+    document.getElementById("currentUserLabel").textContent = `${name}님`;
+
+    alert("계정 정보가 수정되었습니다.");
+    renderEmployeeAccountManagement();
+  }
+
+  function deleteMyEmployeeAccount() {
+    if (!currentUser || currentUser.role !== "employee") return;
+
+    const user = users.find(u => u.id === currentUser.id);
+    if (!user) return;
+
+    const password = document.getElementById("employeeDeletePassword").value;
+
+    if (password !== user.password) {
+      alert("현재 비밀번호가 올바르지 않습니다.");
+      return;
+    }
+
+    const confirmed = confirm(
+      "정말 계정을 삭제하시겠습니까?\n이 계정이 작성한 보고서도 함께 삭제됩니다."
+    );
+
+    if (!confirmed) return;
+
+    users = users.filter(u => u.id !== currentUser.id);
+    reports = reports.filter(r => r.authorId !== currentUser.id);
+
+    saveUsers();
+    saveReports();
+
+    logout();
+  }
+
+  /* CEO */
+  function renderCeoDashboard() {
+    selectedFilterTag = "전체";
+    const main = document.getElementById("mainContent");
+    const uniqueEmployees = new Set(reports.map(r => r.authorId)).size;
+
+    main.innerHTML = `
+      <h1 class="page-title">전체 직원 보고서</h1>
+      <p class="page-desc">CEO 전용 화면입니다. 직원들이 제출한 보고서를 작성자 이름별로 확인할 수 있습니다.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">전체 보고서</div>
+          <div class="stat-value">${reports.length}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">보고서 제출 직원</div>
+          <div class="stat-value">${uniqueEmployees}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">등록 태그</div>
+          <div class="stat-value">${tags.length}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="field" style="margin-bottom:14px">
+          <label>직원 또는 보고서 검색</label>
+          <input
+            id="ceoEmployeeReportSearch"
+            placeholder="직원 이름, 제목, 내용, 태그 검색"
+            oninput="renderCeoEmployeeGroups()"
+          >
+        </div>
+        <div id="ceoTagFilters" class="filter-tags"></div>
+      </div>
+
+      <div id="ceoEmployeeReportGroups"></div>
+    `;
+
+    renderCeoFilters();
+    renderCeoEmployeeGroups();
+  }
+
+  function renderCeoEmployeeGroups() {
+    const container = document.getElementById("ceoEmployeeReportGroups");
+    if (!container) return;
+
+    const searchEl = document.getElementById("ceoEmployeeReportSearch");
+    const q = (searchEl ? searchEl.value : "").trim().toLowerCase();
+
+    const filteredReports = reports.filter(report => {
+      const tagMatch =
+        selectedFilterTag === "전체" ||
+        (report.tags || []).includes(selectedFilterTag);
+
+      const searchMatch =
+        (report.authorName || "").toLowerCase().includes(q) ||
+        (report.title || "").toLowerCase().includes(q) ||
+        (report.content || "").toLowerCase().includes(q) ||
+        (report.tags || []).some(tag => tag.toLowerCase().includes(q));
+
+      return tagMatch && searchMatch;
+    });
+
+    const grouped = {};
+    filteredReports.forEach(report => {
+      const name = report.authorName || "이름 없음";
+      if (!grouped[name]) grouped[name] = [];
+      grouped[name].push(report);
+    });
+
+    const names = Object.keys(grouped).sort((a, b) =>
+      a.localeCompare(b, "ko")
+    );
+
+    container.innerHTML = "";
+
+    if (!names.length) {
+      container.innerHTML =
+        `<div class="empty">조건에 맞는 직원 보고서가 없습니다.</div>`;
+      return;
+    }
+
+    names.forEach(name => {
+      const group = document.createElement("section");
+      group.className = "employee-group";
+
+      const header = document.createElement("div");
+      header.className = "employee-group-header";
+
+      const left = document.createElement("div");
+
+      const nameEl = document.createElement("div");
+      nameEl.className = "employee-name";
+      nameEl.textContent = "👤 " + name;
+
+      const countEl = document.createElement("div");
+      countEl.className = "employee-report-count";
+      countEl.textContent = `${grouped[name].length}개의 보고서`;
+
+      left.appendChild(nameEl);
+      left.appendChild(countEl);
+
+      const arrow = document.createElement("div");
+      arrow.textContent = "▶";
+      arrow.style.color = "#6b7280";
+      arrow.style.fontSize = "13px";
+
+      header.appendChild(left);
+      header.appendChild(arrow);
+
+      const body = document.createElement("div");
+      body.className = "employee-group-body hidden";
+
+      grouped[name].forEach(report => {
+        body.appendChild(createReportCard(report, true));
+      });
+
+      header.onclick = () => {
+        const hidden = body.classList.toggle("hidden");
+        arrow.textContent = hidden ? "▶" : "▼";
+      };
+
+      group.appendChild(header);
+      group.appendChild(body);
+      container.appendChild(group);
+    });
+  }
+
+  function renderCeoFilters() {
+    const box = document.getElementById("ceoTagFilters");
+    if (!box) return;
+
+    box.innerHTML = "";
+    const all = document.createElement("button");
+    all.className = "filter-btn active";
+    all.textContent = `전체 (${reports.length})`;
+    all.onclick = () => {
+      selectedFilterTag = "전체";
+      renderCeoFilters();
+      renderCeoEmployeeGroups();
+    };
+    box.appendChild(all);
+
+    tags.forEach(tag => {
+      const count = reports.filter(r => (r.tags || []).includes(tag)).length;
+      const btn = document.createElement("button");
+      btn.className = "filter-btn" + (selectedFilterTag === tag ? " active" : "");
+      btn.textContent = `#${tag} (${count})`;
+      btn.onclick = () => {
+        selectedFilterTag = tag;
+        renderCeoFilters();
+        renderCeoEmployeeGroups();
+      };
+      box.appendChild(btn);
+    });
+
+    if (selectedFilterTag === "전체") {
+      all.classList.add("active");
+    } else {
+      all.classList.remove("active");
+    }
+  }
+
+  function renderCeoReports() {
+    const list = document.getElementById("ceoReportList");
+    if (!list) return;
+
+    const searchEl = document.getElementById("ceoSearch");
+    const q = (searchEl ? searchEl.value : "").trim().toLowerCase();
+
+    const filtered = reports.filter(r => {
+      const tagMatch = selectedFilterTag === "전체" || (r.tags || []).includes(selectedFilterTag);
+      const searchMatch =
+        (r.authorName || "").toLowerCase().includes(q) ||
+        (r.title || "").toLowerCase().includes(q) ||
+        (r.content || "").toLowerCase().includes(q) ||
+        (r.tags || []).some(t => t.toLowerCase().includes(q));
+
+      return tagMatch && searchMatch;
+    });
+
+    list.innerHTML = "";
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty">조건에 맞는 보고서가 없습니다.</div>`;
+      return;
+    }
+
+    filtered.forEach(report => list.appendChild(createReportCard(report, true)));
+  }
+
+
+  function renderDailySubmissionStatus(selectedDate) {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    const main = document.getElementById("mainContent");
+    const today = new Date();
+    const defaultDate = selectedDate || [
+      today.getFullYear(),
+      String(today.getMonth() + 1).padStart(2, "0"),
+      String(today.getDate()).padStart(2, "0")
+    ].join("-");
+
+    main.innerHTML = `
+      <h1 class="page-title">일일보고서 제출 현황</h1>
+      <p class="page-desc">CEO 전용 화면입니다. 날짜별로 직원들의 일일보고서 제출 여부를 확인할 수 있습니다.</p>
+
+      <div class="card">
+        <div class="date-nav">
+          <div class="field grow" style="margin-bottom:0">
+            <label>확인 날짜</label>
+            <input id="statusDate" type="date" value="${defaultDate}" onchange="renderDailySubmissionStatus(this.value)">
+          </div>
+        </div>
+      </div>
+
+      <div id="dailyStatusContent"></div>
+    `;
+
+    renderDailyStatusContent(defaultDate);
+  }
+
+  function renderDailyStatusContent(dateString) {
+    const box = document.getElementById("dailyStatusContent");
+    if (!box) return;
+
+    const employeeUsers = users.filter(u => u.role === "employee");
+
+    const submittedByUser = {};
+    reports.forEach(report => {
+      if (isReportOnDate(report, dateString)) {
+        if (!submittedByUser[report.authorId]) {
+          submittedByUser[report.authorId] = [];
+        }
+        submittedByUser[report.authorId].push(report);
+      }
+    });
+
+    const submittedCount = employeeUsers.filter(
+      u => (submittedByUser[u.id] || []).length > 0
+    ).length;
+
+    const missingCount = employeeUsers.length - submittedCount;
+
+    box.innerHTML = `
+      <div class="status-summary">
+        <div class="status-card">
+          <div class="label">전체 직원</div>
+          <div class="value">${employeeUsers.length}명</div>
+        </div>
+        <div class="status-card">
+          <div class="label">제출 완료</div>
+          <div class="value">${submittedCount}명</div>
+        </div>
+        <div class="status-card">
+          <div class="label">미제출</div>
+          <div class="value">${missingCount}명</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:15px">${formatStatusDate(dateString)} 제출 현황</h3>
+        <div id="dailyEmployeeStatusList" class="status-list"></div>
+      </div>
+    `;
+
+    const list = document.getElementById("dailyEmployeeStatusList");
+
+    if (!employeeUsers.length) {
+      list.innerHTML = `<div class="empty">등록된 직원 계정이 없습니다.</div>`;
+      return;
+    }
+
+    const sorted = [...employeeUsers].sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "", "ko")
+    );
+
+    sorted.forEach(user => {
+      const userReports = submittedByUser[user.id] || [];
+      const submitted = userReports.length > 0;
+
+      const row = document.createElement("div");
+      row.className = "status-row";
+
+      const left = document.createElement("div");
+
+      const name = document.createElement("div");
+      name.className = "status-person";
+      name.textContent = "👤 " + (user.name || user.id);
+
+      const sub = document.createElement("div");
+      sub.className = "status-sub";
+
+      if (submitted) {
+        const latest = userReports[0];
+        sub.textContent =
+          userReports.length === 1
+            ? `1개 제출 · ${latest.createdAt || ""}`
+            : `${userReports.length}개 제출`;
+      } else {
+        sub.textContent = "해당 날짜에 제출된 보고서가 없습니다.";
+      }
+
+      left.appendChild(name);
+      left.appendChild(sub);
+
+      const badge = document.createElement("span");
+      badge.className = "status-badge " + (submitted ? "done" : "missing");
+      badge.textContent = submitted ? "✓ 제출 완료" : "미제출";
+
+      row.appendChild(left);
+      row.appendChild(badge);
+      list.appendChild(row);
+    });
+  }
+
+  function isReportOnDate(report, targetDate) {
+    if (!report) return false;
+
+    // 신규 보고서에는 ISO 날짜를 함께 저장하고, 기존 데이터는 createdAt을 보조적으로 해석.
+    if (report.createdDate) {
+      return report.createdDate === targetDate;
+    }
+
+    const raw = String(report.createdAt || "");
+    const nums = raw.match(/\d+/g);
+    if (!nums || nums.length < 3) return false;
+
+    const year = nums[0];
+    const month = String(nums[1]).padStart(2, "0");
+    const day = String(nums[2]).padStart(2, "0");
+
+    return `${year}-${month}-${day}` === targetDate;
+  }
+
+  function formatStatusDate(dateString) {
+    const [y, m, d] = dateString.split("-");
+    return `${y}.${m}.${d}`;
+  }
+
+
+  /* =========================================================
+     CEO 계정 및 직원 계정 관리
+  ========================================================= */
+
+  function renderCeoAccountManagement() {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    const main = document.getElementById("mainContent");
+
+    main.innerHTML = `
+      <h1 class="page-title">계정 관리</h1>
+      <p class="page-desc">CEO 비밀번호 변경과 전체 직원 계정 수정·삭제를 관리할 수 있습니다.</p>
+
+      <div class="card">
+        <h3>CEO 계정</h3>
+
+        <div class="account-grid">
+          <div class="field">
+            <label>CEO 아이디</label>
+            <input value="${escapeHtml(CEO_ACCOUNT.id)}" disabled>
+          </div>
+
+          <div class="field">
+            <label>계정 유형</label>
+            <input value="CEO · 단일 계정" disabled>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>현재 비밀번호</label>
+          <input id="ceoCurrentPassword" type="password" placeholder="현재 CEO 비밀번호">
+        </div>
+
+        <div class="account-grid">
+          <div class="field">
+            <label>새 비밀번호</label>
+            <input id="ceoNewPassword" type="password" placeholder="새 비밀번호">
+          </div>
+
+          <div class="field">
+            <label>새 비밀번호 확인</label>
+            <input id="ceoNewPasswordConfirm" type="password" placeholder="새 비밀번호 확인">
+          </div>
+        </div>
+
+        <button class="primary" onclick="changeCeoPassword()">CEO 비밀번호 변경</button>
+
+        <div class="warning-box">
+          CEO 계정은 단 하나만 존재하며 삭제하거나 직원 계정으로 변경할 수 없습니다.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:end;flex-wrap:wrap">
+          <div>
+            <h3 style="margin-bottom:5px">직원 계정 관리</h3>
+            <div style="color:#6b7280;font-size:13px">
+              총 ${users.filter(u => u.role === "employee").length}개의 직원 계정
+            </div>
+          </div>
+
+          <div style="min-width:260px;flex:0 1 380px">
+            <input
+              id="ceoAccountSearch"
+              placeholder="직원 이름, 아이디 또는 이메일 검색"
+              oninput="renderCeoEmployeeAccountList()"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div id="ceoEmployeeAccountList"></div>
+    `;
+
+    renderCeoEmployeeAccountList();
+  }
+
+  function changeCeoPassword() {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    const currentPassword =
+      document.getElementById("ceoCurrentPassword").value;
+
+    const newPassword =
+      document.getElementById("ceoNewPassword").value;
+
+    const confirmPassword =
+      document.getElementById("ceoNewPasswordConfirm").value;
+
+    if (currentPassword !== CEO_ACCOUNT.password) {
+      alert("현재 CEO 비밀번호가 올바르지 않습니다.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      alert("CEO 새 비밀번호는 6자 이상으로 입력해주세요.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      alert("새 비밀번호가 서로 다릅니다.");
+      return;
+    }
+
+    CEO_ACCOUNT = {
+      ...CEO_ACCOUNT,
+      password: newPassword
+    };
+
+    saveCeoAccount();
+
+    alert("CEO 비밀번호가 변경되었습니다.");
+    renderCeoAccountManagement();
+  }
+
+  function renderCeoEmployeeAccountList() {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    const container = document.getElementById("ceoEmployeeAccountList");
+    if (!container) return;
+
+    const searchEl = document.getElementById("ceoAccountSearch");
+    const q = (searchEl ? searchEl.value : "").trim().toLowerCase();
+
+    const employeeUsers = users
+      .filter(u => u.role === "employee")
+      .filter(u =>
+        (u.name || "").toLowerCase().includes(q) ||
+        (u.id || "").toLowerCase().includes(q) ||
+        (u.email || "").toLowerCase().includes(q)
+      )
+      .sort((a, b) =>
+        (a.name || "").localeCompare(b.name || "", "ko")
+      );
+
+    container.innerHTML = "";
+
+    if (!employeeUsers.length) {
+      container.innerHTML =
+        `<div class="empty">조건에 맞는 직원 계정이 없습니다.</div>`;
+      return;
+    }
+
+    employeeUsers.forEach(user => {
+      const reportCount =
+        reports.filter(r => r.authorId === user.id).length;
+
+      const card = document.createElement("div");
+      card.className = "account-card";
+
+      card.innerHTML = `
+        <div class="account-card-head">
+          <div>
+            <div class="account-name">👤 ${escapeHtml(user.name)}</div>
+            <div class="account-id">
+              아이디: ${escapeHtml(user.id)} · 이메일: ${escapeHtml(user.email || "미등록")} · 제출 보고서 ${reportCount}개
+            </div>
+          </div>
+        </div>
+
+        <div class="account-grid">
+          <div class="field">
+            <label>이름</label>
+            <input
+              id="ceoEditName_${safeDomId(user.id)}"
+              value="${escapeHtml(user.name)}"
+            >
+          </div>
+
+          <div class="field">
+            <label>이메일</label>
+            <input
+              id="ceoEditEmail_${safeDomId(user.id)}"
+              type="email"
+              value="${escapeHtml(user.email || "")}"
+            >
+          </div>
+
+          <div class="field">
+            <label>아이디</label>
+            <input
+              id="ceoEditId_${safeDomId(user.id)}"
+              value="${escapeHtml(user.id)}"
+            >
+          </div>
+        </div>
+
+        <div class="field">
+          <label>새 비밀번호</label>
+          <input
+            id="ceoEditPassword_${safeDomId(user.id)}"
+            type="password"
+            placeholder="변경하지 않으려면 비워두세요"
+          >
+        </div>
+
+        <div class="account-actions">
+          <button
+            class="secondary"
+            onclick="ceoUpdateEmployeeAccount('${escapeJs(user.id)}')"
+          >
+            직원 정보 수정
+          </button>
+
+          <button
+            class="danger"
+            onclick="ceoDeleteEmployeeAccount('${escapeJs(user.id)}')"
+          >
+            직원 계정 삭제
+          </button>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function ceoUpdateEmployeeAccount(originalId) {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    const index = users.findIndex(u => u.id === originalId);
+    if (index < 0) return;
+
+    const domId = safeDomId(originalId);
+
+    const newName =
+      document.getElementById(`ceoEditName_${domId}`).value.trim();
+
+    const newEmail =
+      document.getElementById(`ceoEditEmail_${domId}`).value.trim().toLowerCase();
+
+    const newId =
+      document.getElementById(`ceoEditId_${domId}`).value.trim();
+
+    const newPassword =
+      document.getElementById(`ceoEditPassword_${domId}`).value;
+
+    if (!newName || !newEmail || !newId) {
+      alert("이름, 이메일, 아이디를 모두 입력해주세요.");
+      return;
+    }
+
+    if (!isValidEmail(newEmail)) {
+      alert("올바른 이메일 주소를 입력해주세요.");
+      return;
+    }
+
+    if (newId.toLowerCase() === "ceo") {
+      alert("CEO 아이디는 직원 계정에 사용할 수 없습니다.");
+      return;
+    }
+
+    const duplicate = users.some((u, i) =>
+      i !== index &&
+      u.id.toLowerCase() === newId.toLowerCase()
+    );
+
+    if (duplicate) {
+      alert("이미 사용 중인 아이디입니다.");
+      return;
+    }
+
+    const emailDuplicate = users.some((u, i) =>
+      i !== index &&
+      String(u.email || "").toLowerCase() === newEmail
+    );
+
+    if (emailDuplicate) {
+      alert("이미 다른 직원 계정에서 사용 중인 이메일입니다.");
+      return;
+    }
+
+    if (newPassword && newPassword.length < 4) {
+      alert("직원 비밀번호는 4자 이상이어야 합니다.");
+      return;
+    }
+
+    users[index] = {
+      ...users[index],
+      id: newId,
+      name: newName,
+      email: newEmail,
+      password: newPassword || users[index].password
+    };
+
+    reports = reports.map(report => {
+      if (report.authorId === originalId) {
+        return {
+          ...report,
+          authorId: newId,
+          authorName: newName
+        };
+      }
+
+      return report;
+    });
+
+    saveUsers();
+    saveReports();
+
+    alert("직원 계정 정보가 수정되었습니다.");
+    renderCeoAccountManagement();
+  }
+
+  function ceoDeleteEmployeeAccount(employeeId) {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    const user = users.find(u => u.id === employeeId);
+    if (!user) return;
+
+    const reportCount =
+      reports.filter(r => r.authorId === employeeId).length;
+
+    const confirmed = confirm(
+      `${user.name} 직원 계정을 삭제하시겠습니까?\n` +
+      `이 계정이 작성한 보고서 ${reportCount}개도 함께 삭제됩니다.`
+    );
+
+    if (!confirmed) return;
+
+    users = users.filter(u => u.id !== employeeId);
+    reports = reports.filter(r => r.authorId !== employeeId);
+
+    saveUsers();
+    saveReports();
+
+    renderCeoAccountManagement();
+  }
+
+  function safeDomId(value) {
+    return String(value || "")
+      .replace(/[^a-zA-Z0-9_-]/g, "_");
+  }
+
+  function renderTagManagement() {
+    const main = document.getElementById("mainContent");
+    main.innerHTML = `
+      <h1 class="page-title">태그 관리</h1>
+      <p class="page-desc">CEO만 태그를 만들거나 삭제할 수 있습니다.</p>
+
+      <div class="card">
+        <div class="row">
+          <input id="newTagInput" class="grow" placeholder="새 태그 이름 예: 승인필요">
+          <button class="success" onclick="createTag()">+ 태그 생성</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:14px">현재 태그</h3>
+        <div id="tagAdminList"></div>
+      </div>
+    `;
+
+    renderTagAdminList();
+  }
+
+  function createTag() {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    let value = document.getElementById("newTagInput").value.trim();
+    if (value.startsWith("#")) value = value.slice(1);
+    value = value.replace(/\s+/g, "");
+
+    if (!value) {
+      alert("태그 이름을 입력해주세요.");
+      return;
+    }
+
+    if (tags.includes(value)) {
+      alert("이미 존재하는 태그입니다.");
+      return;
+    }
+
+    tags.push(value);
+    tagPriorities[value] = 0;
+    saveTags();
+    saveTagPriorities();
+    document.getElementById("newTagInput").value = "";
+    renderTagAdminList();
+  }
+
+  function deleteTag(tag) {
+    if (!currentUser || currentUser.role !== "ceo") return;
+
+    const used = reports.filter(r => (r.tags || []).includes(tag)).length;
+    let msg = `#${tag} 태그를 삭제하시겠습니까?`;
+    if (used) msg += `\n현재 ${used}개의 보고서에서 사용 중이며 삭제 시 해당 보고서에서도 제거됩니다.`;
+
+    if (!confirm(msg)) return;
+
+    tags = tags.filter(t => t !== tag);
+    delete tagPriorities[tag];
+
+    reports = reports.map(r => ({
+      ...r,
+      tags: (r.tags || []).filter(t => t !== tag)
+    }));
+
+    saveTags();
+    saveTagPriorities();
+    saveReports();
+    renderTagAdminList();
+  }
+
+  function renderTagAdminList() {
+    const box = document.getElementById("tagAdminList");
+    if (!box) return;
+
+    box.innerHTML = "";
+    if (!tags.length) {
+      box.innerHTML = `<div class="empty">등록된 태그가 없습니다.</div>`;
+      return;
+    }
+
+    const sorted = [...tags].sort((a, b) => {
+      const pa = Number(tagPriorities[a] || 0);
+      const pb = Number(tagPriorities[b] || 0);
+
+      if (pb !== pa) return pb - pa;
+      return tags.indexOf(a) - tags.indexOf(b);
+    });
+
+    sorted.forEach(tag => {
+      const used = reports.filter(r => (r.tags || []).includes(tag)).length;
+      const priority = Number(tagPriorities[tag] || 0);
+
+      const row = document.createElement("div");
+      row.className = "tag-admin-row";
+
+      const left = document.createElement("div");
+      left.className = "tag-admin-info";
+
+      const name = document.createElement("strong");
+      name.textContent = "#" + tag;
+
+      const usedText = document.createElement("span");
+      usedText.style.color = "#6b7280";
+      usedText.style.fontSize = "12px";
+      usedText.textContent = `${used}개 보고서`;
+
+      if (priority > 0) {
+        const badge = document.createElement("span");
+        badge.className = "priority-badge";
+        badge.textContent =
+          priority >= 3 ? "★ 최우선" :
+          priority === 2 ? "★ 높음" :
+          "★ 보통";
+        left.appendChild(name);
+        left.appendChild(badge);
+        left.appendChild(usedText);
+      } else {
+        left.appendChild(name);
+        left.appendChild(usedText);
+      }
+
+      const right = document.createElement("div");
+      right.className = "priority-control";
+
+      const select = document.createElement("select");
+      select.className = "priority-select";
+      select.innerHTML = `
+        <option value="0">기본</option>
+        <option value="1">보통</option>
+        <option value="2">높음</option>
+        <option value="3">최우선</option>
+      `;
+      select.value = String(priority);
+      select.onchange = () => setTagPriority(tag, Number(select.value));
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "danger";
+      deleteButton.textContent = "삭제";
+      deleteButton.onclick = () => deleteTag(tag);
+
+      right.appendChild(select);
+      right.appendChild(deleteButton);
+
+      row.appendChild(left);
+      row.appendChild(right);
+      box.appendChild(row);
+    });
+  }
+
+  function setTagPriority(tag, priority) {
+    if (!currentUser || currentUser.role !== "ceo") {
+      alert("CEO만 태그 중요도를 변경할 수 있습니다.");
+      return;
+    }
+
+    if (!tags.includes(tag)) return;
+
+    tagPriorities[tag] = Math.max(0, Math.min(3, Number(priority) || 0));
+    saveTagPriorities();
+
+    renderTagAdminList();
+  }
+
+  function createReportCard(report, ceoView) {
+    const card = document.createElement("div");
+    card.className = "report-card";
+
+    const tagsHtml = (report.tags || [])
+      .map(tag => `<span class="tag-chip">#${escapeHtml(tag)}</span>`)
+      .join("");
+
+    const editable = canEditReport(report);
+
+    card.innerHTML = `
+      <div class="report-head">
+        <div>
+          <div class="report-title">${escapeHtml(report.title)}</div>
+          <div class="report-meta">
+            ${ceoView ? `작성자: ${escapeHtml(report.authorName)} · ` : ""}
+            등록일: ${escapeHtml(report.createdAt)}
+            ${report.updatedAt ? ` · 수정일: ${escapeHtml(report.updatedAt)}` : ""}
+          </div>
+        </div>
+      </div>
+
+      <div class="report-body rich-content">${getReportContentHtml(report)}</div>
+      ${attachmentHtml(report)}
+      <div class="report-tags">${tagsHtml}</div>
+
+      ${editable ? `
+        <div class="report-actions">
+          <button class="secondary" onclick="openEditReport('${escapeJs(String(report.id))}')">✏️ 보고서 수정</button>
+        </div>
+      ` : ""}
+    `;
+
+    return card;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function escapeJs(value) {
+    return String(value ?? "")
+      .replaceAll("\\", "\\\\")
+      .replaceAll("'", "\\'");
+  }
+
+  document.addEventListener("click", event => {
+    const wrap = document.querySelector(".tag-input-wrap");
+    const box = document.getElementById("tagSuggestions");
+    if (wrap && box && !wrap.contains(event.target)) {
+      box.classList.add("hidden");
+    }
+  });
+
+  document.getElementById("loginId").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      login();
+    }
+  });
+
+  document.getElementById("loginPassword").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      login();
+    }
+  });
+
+  ["signupName", "signupEmail", "signupId", "signupPassword", "signupPasswordConfirm"].forEach(id => {
+    document.getElementById(id).addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        signup();
+      }
+    });
+  });
+
+  saveTags();
+  saveTagPriorities();
+  saveCeoAccount();
+
+  if (currentUser) {
+    openApp();
+  }
+</script>
+</body>
+</html>
