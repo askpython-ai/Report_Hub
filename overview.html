@@ -293,9 +293,6 @@
     <div class="header-left">
       <div class="header-brand">S-build / Splant</div>
     </div>
-    <div class="header-actions">
-      <button class="header-btn" onclick="reloadBoard()">새로고침</button>
-    </div>
   </header>
 
   <main>
@@ -609,8 +606,32 @@
       if (event.key === "Escape") closeBoardReportDetail();
     });
 
+    // 같은 페이지에서 데이터가 바뀌어도 자동 반영 (새로고침 버튼 불필요)
+    let lastDataSnapshot = "";
+    function getDataSnapshot() {
+      return [
+        localStorage.getItem("rh_reports") || "",
+        localStorage.getItem("rh_tags") || "",
+        localStorage.getItem("rh_tag_priorities") || ""
+      ].join("\u0001");
+    }
+
+    function autoSyncBoard() {
+      const nextSnapshot = getDataSnapshot();
+      if (nextSnapshot !== lastDataSnapshot) {
+        lastDataSnapshot = nextSnapshot;
+        reloadBoard(false);
+      }
+    }
+
     loadData();
+    lastDataSnapshot = getDataSnapshot();
     requestAnimationFrame(renderTagBoardColumns);
+    window.setInterval(autoSyncBoard, 1000);
+    window.addEventListener("focus", autoSyncBoard);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) autoSyncBoard();
+    });
   </script>
 </body>
 </html>
